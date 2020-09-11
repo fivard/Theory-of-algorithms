@@ -8,10 +8,31 @@
 #include <fstream>
 #include <vector>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
-void fillFileWithNumbers(int countOfNumbers);
-void countSizeOfFiles(vector<int> &countsOfChunkInEachFiles, const int sizeOfChunk, const int countOfFiles, const int countOfInputNumbers);
+class startData{
+public:
+    int countOfInputNumbers;
+    int countOfFiles;
+    int sizeOfChunk;
+    int neededCountOfChunks;
+};
+
+class File{
+public:
+    string fileName;
+    int factSize;
+    int docSize;
+    vector<int> currentChunk;
+};
+
+using namespace std;
+
+void fillFileWithNumbers(const startData data);
+void countSizeOfFiles(vector<int> &countsOfChunkInEachFiles, const startData data);
+
+void setFilesNameAndCountsOfChunks(vector<File> &files, const startData data, vector<int> countsOfChunksInEachFiles);
 
 #endif //MULTIPHASE_SORTING_FILES_H

@@ -2,33 +2,31 @@
 #include <string>
 #include "files.h"
 
-class File{
-    string fileName;
-    int factSize;
-    int docSize;
-    vector<int> currentChunk;
-};
 
 void outputVec(vector<int> vec);
 void countSizeOfFiles(vector<int> &countsOfChunkInEachFiles);
 
 int main() {
-
-    int countOfInputNumbers;
-    int countOfFiles;
-    int sizeOfChunk;
-
+    startData data{};
     cout << "Enter a count of the input numbers\n";
-    cin >> countOfInputNumbers;
+    cin >> data.countOfInputNumbers;
     cout << "Enter a count of the files\n";
-    cin >> countOfFiles;
+    cin >> data.countOfFiles;
     cout << "Enter size of a chunk\n";
-    cin >> sizeOfChunk;
+    cin >> data.sizeOfChunk;
+
+    data.neededCountOfChunks = ceil(data.countOfInputNumbers/(double)data.sizeOfChunk);
 
     vector<int> countsOfChunksInEachFiles;
-    countSizeOfFiles(countsOfChunksInEachFiles, sizeOfChunk, countOfFiles, countOfInputNumbers);
+    vector<File> files;
+    countSizeOfFiles(countsOfChunksInEachFiles, data);
 
-    fillFileWithNumbers(countOfInputNumbers);
+    cout << data.neededCountOfChunks << endl;
+    outputVec(countsOfChunksInEachFiles);
+
+    fillFileWithNumbers(data);
+    setFilesNameAndCountsOfChunks(files, data, countsOfChunksInEachFiles);
+
 
     return 0;
 }
