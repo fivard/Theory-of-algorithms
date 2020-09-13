@@ -9,6 +9,7 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
+#include <ctime>
 
 using namespace std;
 
@@ -23,16 +24,20 @@ public:
 class File{
 public:
     string fileName;
-    int factSize;
-    int docSize;
+    int countOfChunks;
     vector<int> currentChunk;
+    bool inUse;
 };
 
 using namespace std;
 
 void fillFileWithNumbers(const startData data);
 void countSizeOfFiles(vector<int> &countsOfChunkInEachFiles, const startData data);
-
 void setFilesNameAndCountsOfChunks(vector<File> &files, const startData data, vector<int> countsOfChunksInEachFiles);
-
+string mergeSort(vector<File> &files);
+void mergeCurrentChunk(vector<File> &files,vector<ifstream> &ifstreams, const int indexOutputFile, bool append);
+int getIndexMinFile(vector<File> &files);
+int getIndexOutputFile(vector<File> &files);
+bool checkMergedCurrentChunk(vector<File> &files);
+bool checkMergedAllFiles(vector<File> &files);
 #endif //MULTIPHASE_SORTING_FILES_H

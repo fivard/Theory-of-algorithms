@@ -4,16 +4,16 @@
 
 
 void outputVec(vector<int> vec);
-void countSizeOfFiles(vector<int> &countsOfChunkInEachFiles);
 
 int main() {
     startData data{};
-    cout << "Enter a count of the input numbers\n";
+    cout << "Enter a count of the input numbers: ";
     cin >> data.countOfInputNumbers;
-    cout << "Enter a count of the files\n";
+    cout << "\nEnter a count of the files: ";
     cin >> data.countOfFiles;
-    cout << "Enter size of a chunk\n";
+    cout << "\nEnter size of a chunk: ";
     cin >> data.sizeOfChunk;
+    cout << endl;
 
     data.neededCountOfChunks = ceil(data.countOfInputNumbers/(double)data.sizeOfChunk);
 
@@ -21,12 +21,13 @@ int main() {
     vector<File> files;
     countSizeOfFiles(countsOfChunksInEachFiles, data);
 
-    cout << data.neededCountOfChunks << endl;
+    cout << "Count of needed chunks: " << data.neededCountOfChunks << endl;
     outputVec(countsOfChunksInEachFiles);
 
     fillFileWithNumbers(data);
     setFilesNameAndCountsOfChunks(files, data, countsOfChunksInEachFiles);
 
+    mergeSort(files);
 
     return 0;
 }
