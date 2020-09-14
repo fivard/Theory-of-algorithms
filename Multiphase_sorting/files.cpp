@@ -98,10 +98,15 @@ string mergeSort(vector<File> &files){
         indexOutputFile = getIndexOutputFile(files);
         indexMinFile = getIndexMinFile(files);
 
-        bool append = false;
-        for (int i = 0; i < files[indexMinFile].countOfChunks; i++) {
-            mergeCurrentChunk(files, ifstreams, indexOutputFile, append);
-            append = true;
+
+        cout << "\nCountOfChunks: ";
+        for (int i = 0; i < files.size(); i++)
+            cout << files[i].countOfChunks << " ";
+        cout << endl << endl;
+
+        mergeCurrentChunk(files, ifstreams, indexOutputFile);
+        for (int i = 0; i < files[indexMinFile].countOfChunks-1; i++) {
+            mergeCurrentChunkApp(files,ifstreams, indexOutputFile);
         }
 
         int minSize = files[indexMinFile].countOfChunks;
@@ -110,37 +115,19 @@ string mergeSort(vector<File> &files){
                     files[i].countOfChunks -= minSize;
         files[indexOutputFile].countOfChunks += minSize;
 
-        cout << "\nCountOfChunks: ";
-        for (int i = 0; i < files.size(); i++)
-            cout << files[i].countOfChunks << " ";
-        cout << endl << endl;
-
         lastFile = files[indexOutputFile].fileName;
     }
-    cout << "Sorted arrays is in " << lastFile << endl;
+    cout << "\n\nSorted arrays is in " << lastFile << endl;
 
 }
-void mergeCurrentChunk(vector<File> &files, vector<ifstream> &ifstreams, const int indexOutputFile, bool append){
+void mergeCurrentChunkApp(vector<File> &files, vector<ifstream> &ifstreams, const int indexOutputFile){
     //ofstream out(files[indexOutputFile].fileName, ios::binary);
-
-    ofstream out(files[indexOutputFile].fileName);
-    if (append) {
-        out.close();
-        ofstream out(files[indexOutputFile].fileName, ios::app);
-    }
+    ifstreams[indexOutputFile].close();
+    ofstream out(files[indexOutputFile].fileName, ios::app);
     
     for (int i = 0; i < files.size(); i++)
         if (files[i].countOfChunks > 0)
             files[i].inUse = true;
-
-    /*cout << "InUse: ";
-    for (int i = 0; i < files.size(); i++)
-        cout << files[i].inUse << " ";
-    cout << endl;*/
-    cout << "\nCountOfChunks: ";
-    for (int i = 0; i < files.size(); i++)
-        cout << files[i].countOfChunks << " ";
-    cout << endl << endl;
 
     int indexMinNumber = 0, tempNumber;
 
@@ -155,7 +142,7 @@ void mergeCurrentChunk(vector<File> &files, vector<ifstream> &ifstreams, const i
             currentNumbers.push_back(1000);
         }
     }
-    cout << currentNumbers[indexMinNumber] << " ";
+    //cout << currentNumbers[indexMinNumber] << " ";
     out << currentNumbers[indexMinNumber] << " ";
 
     while(!checkMergedCurrentChunk(files)){
@@ -181,10 +168,65 @@ void mergeCurrentChunk(vector<File> &files, vector<ifstream> &ifstreams, const i
 
         if (!checkMergedCurrentChunk(files)) {
             out << currentNumbers[indexMinNumber] << " ";
-            cout << currentNumbers[indexMinNumber] << " ";
+            //cout << currentNumbers[indexMinNumber] << " ";
         }
     }
     out.close();
+    ifstreams[indexOutputFile].open(files[indexOutputFile].fileName);
+}
+void mergeCurrentChunk(vector<File> &files, vector<ifstream> &ifstreams, const int indexOutputFile){
+    //ofstream out(files[indexOutputFile].fileName, ios::binary);
+    ifstreams[indexOutputFile].close();
+    ofstream out(files[indexOutputFile].fileName);
+
+    for (int i = 0; i < files.size(); i++)
+        if (files[i].countOfChunks > 0)
+            files[i].inUse = true;
+
+    int indexMinNumber = 0, tempNumber;
+
+    vector<int> currentNumbers;
+    for (int i = 0; i < files.size(); i++) {
+        if (files[i].inUse) {
+            ifstreams[i] >> tempNumber;
+            currentNumbers.push_back(tempNumber);
+            if (currentNumbers[indexMinNumber] > tempNumber)
+                indexMinNumber = i;
+        }else{
+            currentNumbers.push_back(1000);
+        }
+    }
+    //cout << currentNumbers[indexMinNumber] << " ";
+    out << currentNumbers[indexMinNumber] << " ";
+
+    while(!checkMergedCurrentChunk(files)){
+        if (!files[indexMinNumber].inUse)
+            for (int i = 0; i < files.size(); i++)
+                if (files[i].inUse)
+                    indexMinNumber = i;
+
+        int pos = ifstreams[indexMinNumber].tellg();
+        if (!(ifstreams[indexMinNumber] >> tempNumber) || tempNumber < currentNumbers[indexMinNumber]) {
+            files[indexMinNumber].inUse = false;
+            currentNumbers[indexMinNumber] = 1000;
+            ifstreams[indexMinNumber].seekg(pos);
+        } else
+            currentNumbers[indexMinNumber] = tempNumber;
+
+        for (int i = 0; i < files.size(); i++){
+            if (files[i].inUse){
+                if (currentNumbers[i] < currentNumbers[indexMinNumber])
+                    indexMinNumber = i;
+            }
+        }
+
+        if (!checkMergedCurrentChunk(files)) {
+            out << currentNumbers[indexMinNumber] << " ";
+            //cout << currentNumbers[indexMinNumber] << " ";
+        }
+    }
+    out.close();
+    ifstreams[indexOutputFile].open(files[indexOutputFile].fileName);
 }
 int getIndexOutputFile(vector<File> &files) {
     int indexOutputFile = 0;

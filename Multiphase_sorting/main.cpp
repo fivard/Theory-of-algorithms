@@ -21,8 +21,6 @@ int main() {
     vector<File> files;
     countSizeOfFiles(countsOfChunksInEachFiles, data);
 
-    cout << "Count of needed chunks: " << data.neededCountOfChunks << endl;
-    outputVec(countsOfChunksInEachFiles);
 
     fillFileWithNumbers(data);
     setFilesNameAndCountsOfChunks(files, data, countsOfChunksInEachFiles);
