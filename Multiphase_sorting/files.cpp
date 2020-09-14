@@ -84,7 +84,7 @@ void setFilesNameAndCountsOfChunks(vector<File> &files, const startData data, ve
 string mergeSort(vector<File> &files){
     int indexOutputFile = 0;
     int indexMinFile = 0;
-    string lastFile;
+    string lastFile = "file1.txt";
 
     vector<ifstream> ifstreams;
     for (int i = 0; i < files.size(); i++){
@@ -104,23 +104,45 @@ string mergeSort(vector<File> &files){
             cout << files[i].countOfChunks << " ";
         cout << endl << endl;
 
-        mergeCurrentChunk(files, ifstreams, indexOutputFile);
-        for (int i = 0; i < files[indexMinFile].countOfChunks-1; i++) {
-            mergeCurrentChunkApp(files,ifstreams, indexOutputFile);
-        }
+        int sumInUse = 0;
+        for (int i = 0; i < files.size(); i++)
+            if (files[i].countOfChunks > 0)
+                sumInUse++;
+
+        int countOfChunks = 0;
+        for (int i = 0; i < files.size(); i++)
+            countOfChunks += files[i].countOfChunks;
 
         int minSize = files[indexMinFile].countOfChunks;
-        for (int i = 0; i < files.size(); i++)
+
+        if (sumInUse == 1 && countOfChunks > 1){
+            mergeCurrentChunk(files, ifstreams, indexOutputFile);
+            for (int i = 0; i < (files[indexMinFile].countOfChunks-1)/2; i++) {
+                mergeCurrentChunkAppend(files,ifstreams, indexOutputFile);
+            }
+            for (int i = 0; i < files.size(); i++)
+                if (files[i].countOfChunks > 0)
+                    files[i].countOfChunks -= minSize/2;
+            files[indexOutputFile].countOfChunks += minSize/2;
+
+        } else{
+            mergeCurrentChunk(files, ifstreams, indexOutputFile);
+            for (int i = 0; i < files[indexMinFile].countOfChunks-1; i++) {
+                mergeCurrentChunkAppend(files,ifstreams, indexOutputFile);
+            }
+
+            for (int i = 0; i < files.size(); i++)
                 if (files[i].countOfChunks > 0)
                     files[i].countOfChunks -= minSize;
-        files[indexOutputFile].countOfChunks += minSize;
-
+            files[indexOutputFile].countOfChunks += minSize;
+        }
         lastFile = files[indexOutputFile].fileName;
     }
+
     cout << "\n\nSorted arrays is in " << lastFile << endl;
 
 }
-void mergeCurrentChunkApp(vector<File> &files, vector<ifstream> &ifstreams, const int indexOutputFile){
+void mergeCurrentChunkAppend(vector<File> &files, vector<ifstream> &ifstreams, const int indexOutputFile){
     //ofstream out(files[indexOutputFile].fileName, ios::binary);
     ifstreams[indexOutputFile].close();
     ofstream out(files[indexOutputFile].fileName, ios::app);
@@ -142,8 +164,8 @@ void mergeCurrentChunkApp(vector<File> &files, vector<ifstream> &ifstreams, cons
             currentNumbers.push_back(1000);
         }
     }
-    //cout << currentNumbers[indexMinNumber] << " ";
     out << currentNumbers[indexMinNumber] << " ";
+    //out.write((char*)&currentNumbers[indexMinNumber], sizeof(currentNumbers[indexMinNumber]));
 
     while(!checkMergedCurrentChunk(files)){
         if (!files[indexMinNumber].inUse)
@@ -168,7 +190,7 @@ void mergeCurrentChunkApp(vector<File> &files, vector<ifstream> &ifstreams, cons
 
         if (!checkMergedCurrentChunk(files)) {
             out << currentNumbers[indexMinNumber] << " ";
-            //cout << currentNumbers[indexMinNumber] << " ";
+            //out.write((char*)&currentNumbers[indexMinNumber], sizeof(currentNumbers[indexMinNumber]));
         }
     }
     out.close();
@@ -196,7 +218,7 @@ void mergeCurrentChunk(vector<File> &files, vector<ifstream> &ifstreams, const i
             currentNumbers.push_back(1000);
         }
     }
-    //cout << currentNumbers[indexMinNumber] << " ";
+    //out.write((char*)&currentNumbers[indexMinNumber], sizeof(currentNumbers[indexMinNumber]));
     out << currentNumbers[indexMinNumber] << " ";
 
     while(!checkMergedCurrentChunk(files)){
@@ -222,7 +244,7 @@ void mergeCurrentChunk(vector<File> &files, vector<ifstream> &ifstreams, const i
 
         if (!checkMergedCurrentChunk(files)) {
             out << currentNumbers[indexMinNumber] << " ";
-            //cout << currentNumbers[indexMinNumber] << " ";
+            //out.write((char*)&currentNumbers[indexMinNumber], sizeof(currentNumbers[indexMinNumber]));
         }
     }
     out.close();
