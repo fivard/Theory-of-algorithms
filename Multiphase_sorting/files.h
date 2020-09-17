@@ -32,13 +32,15 @@ public:
 using namespace std;
 
 void fillFileWithNumbers(const startData data);
-void countSizeOfFiles(vector<int> &countsOfChunkInEachFiles, const startData data);
-void setFilesNameAndCountsOfChunks(vector<File> &files, const startData data, vector<int> countsOfChunksInEachFiles);
+void countSizeOfFiles(vector<int> &countsOfChunkInEachFiles, startData &data);
+void setFilesNameAndCountsOfChunks(vector<File> &files, const startData &data, vector<int> countsOfChunksInEachFiles);
+
 string mergeSort(vector<File> &files);
-void mergeCurrentChunk(vector<File> &files,vector<ifstream> &ifstreams, const int indexOutputFile);
-void mergeCurrentChunkAppend(vector<File> &files,vector<ifstream> &ifstreams, const int indexOutputFile);
+void mergeCurrentChunk(vector<File> &files,vector<ifstream> &ifstreams, ofstream &out, const int indexOutputFile);
+
 int getIndexMinFile(vector<File> &files);
 int getIndexOutputFile(vector<File> &files);
 bool checkMergedCurrentChunk(vector<File> &files);
 bool checkMergedAllFiles(vector<File> &files);
+void outAllFiles(vector<File> &files, startData data);
 #endif //MULTIPHASE_SORTING_FILES_H

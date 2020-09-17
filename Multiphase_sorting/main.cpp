@@ -2,9 +2,6 @@
 #include <string>
 #include "files.h"
 
-
-void outputVec(vector<int> vec);
-
 int main() {
     startData data{};
     cout << "Enter a count of the input numbers: ";
@@ -19,22 +16,11 @@ int main() {
 
     vector<int> countsOfChunksInEachFiles;
     vector<File> files;
+
     countSizeOfFiles(countsOfChunksInEachFiles, data);
-
-
     fillFileWithNumbers(data);
     setFilesNameAndCountsOfChunks(files, data, countsOfChunksInEachFiles);
-
     mergeSort(files);
 
     return 0;
 }
-
-
-
-void outputVec(vector<int> vec){
-    for(int i = 0; i < vec.size(); i++)
-        cout << vec[i] << ' ';
-    cout << endl;
-}
-

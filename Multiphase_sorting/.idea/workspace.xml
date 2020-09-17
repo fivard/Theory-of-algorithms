@@ -13,8 +13,12 @@
   <component name="ChangeListManager">
     <list default="true" id="9bdb00bc-3b62-4eea-8eb5-cef6aa0046f1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/files.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/files.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/files.h" beforeDir="false" afterPath="$PROJECT_DIR$/files.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sort.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sort.h" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +72,10 @@
       <workItem from="1599827194649" duration="23488000" />
       <workItem from="1600027196071" duration="587000" />
       <workItem from="1600064851404" duration="4266000" />
-      <workItem from="1600077439393" duration="1160000" />
+      <workItem from="1600077439393" duration="1722000" />
+      <workItem from="1600334612100" duration="10365000" />
+      <workItem from="1600353446994" duration="37000" />
+      <workItem from="1600361153823" duration="4770000" />
     </task>
     <servers />
   </component>
@@ -76,26 +83,30 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="548" y="168" key="FileChooserDialogImpl" timestamp="1599548857185">
+    <state x="499" y="160" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1600361200302">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="548" y="168" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1599548857185" />
-    <state width="1493" height="178" key="GridCell.Tab.0.bottom" timestamp="1600078667866">
+    <state x="499" y="160" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824@0.0.1536.824" timestamp="1600361200302" />
+    <state x="548" y="168" key="FileChooserDialogImpl" timestamp="1600353472493">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="178" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1600078667866" />
-    <state width="1493" height="178" key="GridCell.Tab.0.center" timestamp="1600078667866">
+    <state x="548" y="168" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1600353472493" />
+    <state width="1493" height="456" key="GridCell.Tab.0.bottom" timestamp="1600370303524">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="178" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1600078667866" />
-    <state width="1493" height="178" key="GridCell.Tab.0.left" timestamp="1600078667866">
+    <state width="1493" height="456" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1600370303524" />
+    <state width="1493" height="456" key="GridCell.Tab.0.center" timestamp="1600370303523">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="178" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1600078667866" />
-    <state width="1493" height="178" key="GridCell.Tab.0.right" timestamp="1600078667866">
+    <state width="1493" height="456" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1600370303523" />
+    <state width="1493" height="456" key="GridCell.Tab.0.left" timestamp="1600370303523">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="178" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1600078667866" />
+    <state width="1493" height="456" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1600370303523" />
+    <state width="1493" height="456" key="GridCell.Tab.0.right" timestamp="1600370303523">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="456" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1600370303523" />
     <state width="1493" height="261" key="GridCell.Tab.1.bottom" timestamp="1600069266677">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
