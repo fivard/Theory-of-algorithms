@@ -107,38 +107,21 @@ string mergeSort(vector<File> &files){
         cout << "\nCountOfChunks: ";
         for (int i = 0; i < files.size(); i++)
             cout << files[i].countOfChunks << " ";
-        cout << endl << endl;
-
-        int sumInUse = 0;
-        for (int i = 0; i < files.size(); i++)
-            if (files[i].countOfChunks > 0)
-                sumInUse++;
-
-        int countOfChunks = 0;
-        for (int i = 0; i < files.size(); i++)
-            countOfChunks += files[i].countOfChunks;
+        cout << endl;
 
         int minSize = files[indexMinFile].countOfChunks;
 
         ifstreams[indexOutputFile].close();
         ofstream out(files[indexOutputFile].fileName, ios::binary);
 
-        if (sumInUse == 1 && countOfChunks > 1){
-            for (int i = 0; i < (files[indexMinFile].countOfChunks-1)/2; i++)
-                mergeCurrentChunk(files,ifstreams, out, indexOutputFile);
-            for (int i = 0; i < files.size(); i++)
-                if (files[i].countOfChunks > 0)
-                    files[i].countOfChunks -= minSize/2;
-            files[indexOutputFile].countOfChunks += minSize/2;
-        }else{
-            for (int i = 0; i < files[indexMinFile].countOfChunks; i++) {
-                mergeCurrentChunk(files, ifstreams, out, indexOutputFile);
-            }
-            for (int i = 0; i < files.size(); i++)
-                if (files[i].countOfChunks > 0)
-                    files[i].countOfChunks -= minSize;
-            files[indexOutputFile].countOfChunks += minSize;
+        for (int i = 0; i < files[indexMinFile].countOfChunks; i++) {
+            mergeCurrentChunk(files, ifstreams, out, indexOutputFile);
         }
+        for (int i = 0; i < files.size(); i++)
+            if (files[i].countOfChunks > 0)
+                files[i].countOfChunks -= minSize;
+        files[indexOutputFile].countOfChunks += minSize;
+
         out.close();
         ifstreams[indexOutputFile].open(files[indexOutputFile].fileName, ios::binary);
 
@@ -155,7 +138,7 @@ string mergeSort(vector<File> &files){
 
     cout << "\n end sort " << timePush << endl;
 
-    ifstream in(lastFile, ios::binary);
+    /*ifstream in(lastFile, ios::binary);
     int val;
     in.seekg(0, ios::end);
     int end_file = in.tellg();
@@ -164,7 +147,7 @@ string mergeSort(vector<File> &files){
         in.read((char *)&val, sizeof(int));
         cout << val << " ";
     }
-    in.close();
+    in.close();*/
 }
 void mergeCurrentChunk(vector<File> &files, vector<ifstream> &ifstreams, ofstream &out, const int indexOutputFile){
 
