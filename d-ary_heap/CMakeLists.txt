@@ -3,4 +3,4 @@ project(d_ary_heap)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(d_ary_heap main.cpp)
+add_executable(d_ary_heap main.cpp src/dAryHeap.h)
