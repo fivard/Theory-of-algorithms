@@ -24,7 +24,6 @@ int partition(vector<int> &array, int low, int high, int pivot) {
     }
     swap(array[i], array[high]);
     return i;
-
 }
 
 void doubleQuickSort(std::vector<int> &firstVector, std::vector<int> &secondVector, int low, int high) {
@@ -35,8 +34,8 @@ void doubleQuickSort(std::vector<int> &firstVector, std::vector<int> &secondVect
     partition(secondVector, low, high, firstVector[pivot]);
     doubleQuickSort(firstVector, secondVector, low, pivot - 1);
     doubleQuickSort(firstVector, secondVector, pivot + 1, high);
-
 }
+
 bool check(vector<int>& vec){
     for (int i = 1; i < vec.size(); i++)
         if (vec[i] < vec[i-1])
