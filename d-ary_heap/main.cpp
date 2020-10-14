@@ -1,6 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cmath>
+
+double log(double a, double b){
+    return log(b) / log(a);
+}
 
 class dAryHeap{
     std::vector<int> heap;
@@ -34,7 +39,6 @@ class dAryHeap{
     }
     void dipping(int index){
         int sonIndex = maxChild(index);
-        std::cout << sonIndex << '\n';
         while (sonIndex != 0 && heap[index] < heap[sonIndex]){
             std::swap(heap[index], heap[sonIndex]);
             index = sonIndex;
@@ -62,10 +66,19 @@ public:
         surfacing(index);
     }
     void output(){
-        for (int i : heap)
-            std::cout << i << " ";
+        std::cout << "root: " << heap[0] << std::endl << '\t';
+        for (int i = 1; i < heap.size(); i++) {
+            if ((i-1)%countOfSons == 0 && i != 1){
+                for (int j = 0; j <= log(countOfSons,i); j++)
+                    std::cout << '\t';
+                std::cout << "son of " << heap[(i-1)/countOfSons] << '\n';
+            }
+            for (int j = 0; j < log(countOfSons,i); j++)
+                std::cout << '\t';
+            std::cout << heap[i] << '\n';
+        }
         std::cout << std::endl;
-    } //TODO нормальный вывод
+    }
 };
 
 int main() {
@@ -73,13 +86,14 @@ int main() {
     for (int i = 0; i < 10; i++)
         heap.insert(i);
     heap.output();
-    std::cout << heap.extractMax() << std::endl;
+    std::cout << "max = " << heap.extractMax() << std::endl;
 
     heap.output();
     heap.increaseKey(5, 10);
     heap.output();
     heap.insert(1);
     heap.insert(10);
+    heap.insert(100);
     heap.output();
     return 0;
 }
