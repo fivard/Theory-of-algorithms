@@ -7,6 +7,7 @@ double log(double a, double b){
     return log(b) / log(a);
 }
 
+
 class dAryHeap{
     std::vector<int> heap;
     int countOfSons;
@@ -81,19 +82,68 @@ public:
     }
 };
 
-int main() {
-    dAryHeap heap(5);
-    for (int i = 0; i < 10; i++)
-        heap.insert(i);
-    heap.output();
-    std::cout << "max = " << heap.extractMax() << std::endl;
+void interactive(){
+    std::cout << "Enter count of sons\n";
+    int countOfSons;
+    std::cin >> countOfSons;
+    dAryHeap heap(countOfSons);
+    while(true){
+        int action;
+        std::cout << "[0] - insert\n"
+        << "[1] - extract-max\n"
+        << "[2] - increase-key\n"
+        << "[3] - output\n"
+        << "\n[4] - exit\n";
+        std::cin >> action;
+        switch (action){
+            case 0:
+                int value;
+                std::cout << "Enter new value\n";
+                std::cin >> value;
+                heap.insert(value);
+                break;
+            case 1:
+                std::cout << heap.extractMax() << std::endl;
+                break;
+            case 2:
+                int index;
+                std::cout << "Enter index, value\n";
+                std::cin >> index >> value;
+                heap.increaseKey(index,value);
+                break;
+            case 3:
+                heap.output();
+                break;
+            case 4:
+                return;
+            default:
+                std::cout << "Wrong case\n";
 
-    heap.output();
-    heap.increaseKey(5, 10);
-    heap.output();
-    heap.insert(1);
-    heap.insert(10);
-    heap.insert(100);
-    heap.output();
+        }
+
+    }
+}
+
+int main() {
+    std::cout << "Interactive? [0/1]\n";
+    int check;
+    std::cin >> check;
+    if (check)
+        interactive();
+    else{
+        dAryHeap heap(5);
+        for (int i = 0; i < 10; i++)
+            heap.insert(i);
+        heap.output();
+        std::cout << "max = " << heap.extractMax() << std::endl;
+
+        heap.output();
+        heap.increaseKey(5, 10);
+        heap.output();
+        heap.insert(1);
+        heap.insert(10);
+        heap.insert(100);
+        heap.output();
+    }
     return 0;
 }
