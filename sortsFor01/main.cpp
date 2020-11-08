@@ -16,6 +16,9 @@ void generatingArray(int n, element array[]){
 
 void outputArray(int n, element array[]){
     for (int i = 0; i < n; i++)
+        std::cout << array[i].value << " ";
+    std::cout << "\n";
+    for (int i = 0; i < n; i++)
         std::cout << array[i].key << " ";
     std::cout << "\n";
 }
