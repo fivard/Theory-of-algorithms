@@ -5,6 +5,7 @@
 #ifndef PERFECTHASH_MUSICSTORE_H
 #define PERFECTHASH_MUSICSTORE_H
 
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -19,10 +20,26 @@ class Performer{
 
 public:
     Performer();
-    Performer(const string& name, const int age);
-    Performer(const string& name, const int age, const vector<int> albumsId);
+    Performer(const string& name, int age);
+    Performer(const string& name, int age, const vector<int>& albumsId);
+
+    int getId();
+    static vector<Performer> generatingPerformers(int count);
 
 };
+
+class Album{
+    int _id;
+    string _name;
+    int _performersId;
+    int _countOfSongs;
+    int _cost;
+    static int currentFreeId;
+public:
+    Album();
+    Album(const string& name, int performersId, int countOfSongs, int cost);
+};
+
 
 
 #endif //PERFECTHASH_MUSICSTORE_H
