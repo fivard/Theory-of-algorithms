@@ -1,9 +1,10 @@
 //
-// Created by Acer on 04.02.2021.
+// Created by Acer on 11.02.2021.
 //
 
-#ifndef PERFECTHASH_MUSICSTORE_H
-#define PERFECTHASH_MUSICSTORE_H
+#ifndef ORDINALSTATISTICSTREE_MUSICSTORE_H
+#define ORDINALSTATISTICSTREE_MUSICSTORE_H
+
 
 #include <iostream>
 #include <string>
@@ -42,6 +43,4 @@ public:
 };
 
 
-
-
-#endif //PERFECTHASH_MUSICSTORE_H
+#endif //ORDINALSTATISTICSTREE_MUSICSTORE_H

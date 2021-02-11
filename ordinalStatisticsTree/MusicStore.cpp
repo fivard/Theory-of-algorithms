@@ -1,5 +1,5 @@
 //
-// Created by Acer on 04.02.2021.
+// Created by Acer on 11.02.2021.
 //
 
 #include "MusicStore.h"
@@ -75,3 +75,4 @@ Album::Album(const string &name, int performersId, int countOfSongs, int cost) {
     _countOfSongs = countOfSongs;
     _cost = cost;
 }
+
