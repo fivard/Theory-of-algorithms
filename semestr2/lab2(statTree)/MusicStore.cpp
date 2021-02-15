@@ -1,5 +1,5 @@
 //
-// Created by Acer on 11.02.2021.
+// Created by Acer on 14.02.2021.
 //
 
 #include "MusicStore.h"
@@ -8,15 +8,15 @@ int Performer::currentFreeId = 0;
 int Album::currentFreeId = 0;
 
 string names[] = {"UlysesRivera",
-                   "YashReed",
-                   "XimenezFlores",
-                   "Mike",
-                   "Alex",
-                   "Dima",
-                   "Roma",
-                   "AAAAAAA",
-                   "Gtgs",
-                   "addsasadda"
+                  "YashReed",
+                  "XimenezFlores",
+                  "Mike",
+                  "Alex",
+                  "Dima",
+                  "Roma",
+                  "AAAAAAA",
+                  "Gtgs",
+                  "addsasadda"
 };
 
 Performer::Performer() {

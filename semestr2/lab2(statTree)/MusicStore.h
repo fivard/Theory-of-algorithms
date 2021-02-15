@@ -1,9 +1,9 @@
 //
-// Created by Acer on 11.02.2021.
+// Created by Acer on 14.02.2021.
 //
 
-#ifndef ORDINALSTATISTICSTREE_MUSICSTORE_H
-#define ORDINALSTATISTICSTREE_MUSICSTORE_H
+#ifndef LAB2_STATTREE__MUSICSTORE_H
+#define LAB2_STATTREE__MUSICSTORE_H
 
 
 #include <iostream>
@@ -42,5 +42,4 @@ public:
     Album(const string& name, int performersId, int countOfSongs, int cost);
 };
 
-
-#endif //ORDINALSTATISTICSTREE_MUSICSTORE_H
+#endif //LAB2_STATTREE__MUSICSTORE_H
