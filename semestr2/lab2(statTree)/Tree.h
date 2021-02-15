@@ -10,7 +10,7 @@
 typedef enum {BLACK, RED} nodeColor;
 
 class Tree {
-public:
+
     class Node {
 
     public:
@@ -21,23 +21,25 @@ public:
         int _data;
         unsigned int _size;
 
-        Node(int data);
-        Node(Node *left, Node *right, Node *parent,
-             nodeColor color, int data, unsigned int size);
+        explicit Node(int data);
 
-        void clearMemory(Node* node);
-        void output(int countTabs);
+
+        void output(int countTabs) const;
     };
     Node* root;
+    void clearMemory(Node* node);
 
     void fixInsertion(Node* node);
     void leftRotate(Node* node);
     void rightRotate(Node* node);
 
+public:
     Tree();
     ~Tree();
     void insert(int data);
-    void output();
+    Node* search(int data);
+    
+    void output() const;
 };
 
 #endif //LAB2_STATTREE_TREE_H

@@ -10,17 +10,8 @@ Tree::Node::Node(int data) {
     _size = 1;
     _left = _right = _parent = nullptr;
 }
-Tree::Node::Node(Node *left, Node *right, Node *parent,
-           nodeColor color, int data, unsigned int size) {
-    _left = left;
-    _right = right;
-    _parent = parent;
-    _color = color;
-    _data = data;
-    _size = size;
-}
 
-void Tree::Node::output(int countTabs) {
+void Tree::Node::output(int countTabs) const {
     cout << _data << " ";
     if (_color == RED)
         cout << "RED" << endl;
@@ -41,13 +32,13 @@ void Tree::Node::output(int countTabs) {
     }
 
 }
-void Tree::Node::clearMemory(Node* node) {
+void Tree::clearMemory(Node* node) {
     if (node != nullptr){
         if (node->_right)
             clearMemory(node->_right);
         if (node->_left)
             clearMemory(node->_left);
-        node = nullptr;
+        delete node;
     }
 }
 
@@ -55,14 +46,24 @@ Tree::Tree() {
     root = nullptr;
 }
 Tree::~Tree() {
-    root->clearMemory(root);
+    clearMemory(root);
 }
 
-void Tree::output() {
+void Tree::output() const {
     cout << "\nTree:\n";
     root->output(1);
 }
-
+Tree::Node* Tree::search(int data) {
+    Node* temp = root;
+    while (temp != nullptr && temp->_data != data){
+        if (temp->_data > data)
+            temp = temp->_left;
+        else
+            temp = temp->_right;
+        cout << temp->_data << endl;
+    }
+    return temp;
+}
 void Tree::insert(int data) {
     Node *node = new Node(data);
     if (root == nullptr){
@@ -92,13 +93,19 @@ void Tree::insert(int data) {
     }
     fixInsertion(node);
 }
+string Tree::getColor(Node *node) {
+    if (node->_color == BLACK)
+        return "BLACK";
+    else
+        return "RED";
+}
 
 void Tree::fixInsertion(Node *node) {
     if (node == root) {
         root->_color = BLACK;
         return;
     }
-    node->output(1);
+
     while(node->_parent != nullptr && node->_parent->_color == RED){
         if (node->_parent == node->_parent->_parent->_left){
             Node* uncle = node->_parent->_parent->_right;
@@ -123,7 +130,6 @@ void Tree::fixInsertion(Node *node) {
                 uncle->_color = BLACK;
                 node->_parent->_parent->_color = RED;
                 node = node->_parent->_parent;
-                cout << node->_data;
             } else {
                 if (node == node->_parent->_left){
                     node = node->_parent;
@@ -166,9 +172,9 @@ void Tree::rightRotate(Node *node) {
     if (node->_parent == nullptr){
         root = leftSon;
     } else if (node == node->_parent->_left)
-        node->_parent->_right = leftSon;
-    else
         node->_parent->_left = leftSon;
+    else
+        node->_parent->_right = leftSon;
 
     leftSon->_right = node;
     node->_parent = leftSon;
