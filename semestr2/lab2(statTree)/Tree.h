@@ -30,6 +30,7 @@ class Tree {
     void clearMemory(Node* node);
 
     void fixInsertion(Node* node);
+    void fixErasing(Node* node);
     void leftRotate(Node* node);
     void rightRotate(Node* node);
 
@@ -38,8 +39,10 @@ public:
     ~Tree();
     void insert(int data);
     Node* search(int data);
-    
+    Node* getSuccessor(Node* node);
+    Node* getMinNode(Node* node) const;
     void output() const;
+    void erase(int data);
 };
 
 #endif //LAB2_STATTREE_TREE_H

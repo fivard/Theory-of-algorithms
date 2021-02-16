@@ -6,5 +6,8 @@ int main() {
         tree.insert(i);
         tree.output();
     }
+    tree.erase(12);
+    tree.erase(14);
+    tree.output();
     return 0;
 }

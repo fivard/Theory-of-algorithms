@@ -60,9 +60,27 @@ Tree::Node* Tree::search(int data) {
             temp = temp->_left;
         else
             temp = temp->_right;
-        cout << temp->_data << endl;
     }
     return temp;
+}
+Tree::Node* Tree::getSuccessor(Node *node) {
+    if (node->_right)
+        return getMinNode(node->_right);
+
+    Node* successor = node->_parent;
+
+    while (successor && successor->_right == node) {
+        node = successor;
+        successor = successor->_parent;
+    }
+
+    return successor;
+}
+Tree::Node* Tree::getMinNode(Node *node) const{
+    while (node && node->_left)
+        node = node->_left;
+
+    return node;
 }
 void Tree::insert(int data) {
     Node *node = new Node(data);
@@ -93,11 +111,54 @@ void Tree::insert(int data) {
     }
     fixInsertion(node);
 }
-string Tree::getColor(Node *node) {
-    if (node->_color == BLACK)
-        return "BLACK";
-    else
-        return "RED";
+void Tree::erase(int data){
+    Node* node = search(data);
+    if (node == nullptr){
+        cout << "There isn't vertex with given data\n";
+        return;
+    }
+
+    Node* parent = node->_parent;
+    Node* child  = nullptr;
+    Node* successor;
+
+    if (node->_left && node->_right) {
+        successor = getSuccessor(node);
+
+        node->_data = successor->_data;
+        parent = successor->_parent;
+        node = successor;
+
+        if (successor->_right)
+            child = successor->_right;
+    } else if (!node->_left && node->_right) {
+        child = node->_right;
+    } else if (node->_left && !node->_right) {
+        child = node->_left;
+    }
+
+    if (parent) {
+        if (parent->_left == node)
+            parent->_left = child;
+        else
+            parent->_right = child;
+
+        if (child)
+            child->_parent = parent;
+    } else {
+        root = child;
+
+        if (root)
+            root->_parent = nullptr;
+    }
+
+    if (node->_color == BLACK && child)
+        fixErasing(child);
+
+    node->_left = nullptr;
+    node->_right = nullptr;
+
+    delete node;
 }
 
 void Tree::fixInsertion(Node *node) {
@@ -142,6 +203,85 @@ void Tree::fixInsertion(Node *node) {
         }
     }
     root->_color = BLACK;
+}
+void Tree::fixErasing(Node *node) {
+    while (node != root && node->_color == BLACK) {
+        Node* parent = node->_parent;
+
+        if (parent->_left == node) {
+            Node* brother = parent->_right;
+
+            if (brother->_color == RED) {
+                brother->_color = BLACK;
+                parent->_color = BLACK;
+
+                leftRotate(parent);
+                brother = parent->_right;
+            }
+
+            if ((!brother->_left || brother->_left->_color == BLACK) &&
+                (!brother->_right || brother->_right->_color == BLACK)) {
+
+                brother->_color = RED;
+                node = parent;
+                parent = node->_parent;
+            } else if (!brother->_right || brother->_right->_color == BLACK) {
+                brother->_color = RED;
+
+                rightRotate(brother);
+                brother = parent->_right;
+            }
+
+            if (parent) {
+                brother->_color = parent->_color;
+                parent->_color = BLACK;
+
+                if (brother->_right)
+                    brother->_right->_color = BLACK;
+
+                leftRotate(parent);
+            }
+
+            node = root;
+        } else {
+            Node* brother = parent->_left;
+
+            if (brother->_color == RED) {
+                brother->_color = BLACK;
+                parent->_color = RED;
+
+                rightRotate(parent);
+                brother = parent->_left;
+            }
+
+            if ((!brother->_left || brother->_left->_color == BLACK) &&
+                (!brother->_right || brother->_right->_color == BLACK)) {
+
+                brother->_color = RED;
+                node = parent;
+                parent = node->_parent;
+            } else if (!brother->_left || brother->_left->_color == BLACK) {
+                brother->_color = RED;
+
+                leftRotate(brother);
+                brother = parent->_left;
+            }
+
+            if (parent) {
+                brother->_color = parent->_color;
+                parent->_color  = BLACK;
+
+                if (brother->_left)
+                    brother->_left->_color = BLACK;
+
+                rightRotate(parent);
+            }
+
+            node = root;
+        }
+    }
+
+    node->_color = BLACK;
 }
 
 void Tree::leftRotate(Node *node) {
