@@ -24,7 +24,7 @@ class Tree {
         explicit Node(int data);
 
 
-        void output(int countTabs) const;
+        void output(Node *node, int space) const;
     };
     Node* root;
     void clearMemory(Node* node);
