@@ -315,7 +315,7 @@ void Tree::fixErasing(Node *node) {
 void Tree::leftRotate(Node *node) {
     Node *rightSon = node->_right;
     node->_right = rightSon->_left;
-
+    
     if (rightSon->_left != nullptr)
         rightSon->_left->_parent = node;
     rightSon->_parent = node->_parent;
@@ -329,12 +329,11 @@ void Tree::leftRotate(Node *node) {
     rightSon->_left = node;
     node->_parent = rightSon;
 
-
     rightSon->_size = node->_size;
     node->_size = 1;
     if (node->_left != nullptr)
         node->_size += node->_left->_size;
-    if (node->_left != nullptr)
+    if (node->_right != nullptr)
         node->_size += node->_right->_size;
 }
 void Tree::rightRotate(Node *node) {
@@ -359,6 +358,6 @@ void Tree::rightRotate(Node *node) {
     node->_size = 1;
     if (node->_left != nullptr)
         node->_size += node->_left->_size;
-    if (node->_left != nullptr)
+    if (node->_right != nullptr)
         node->_size += node->_right->_size;
 }

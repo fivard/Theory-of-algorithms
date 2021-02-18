@@ -2,14 +2,12 @@
 
 int main() {
     Tree tree;
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 20; i++)
         tree.insert(i);
-        //tree.output();
+
+    for (int i = 0; i < 19; i++) {
+        tree.erase(i);
+        tree.output();
     }
-    tree.output();
-    tree.erase(7);
-    tree.output();
-    //tree.erase(14);
-    //tree.output();
     return 0;
 }
