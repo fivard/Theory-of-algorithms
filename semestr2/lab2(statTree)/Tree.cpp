@@ -24,9 +24,11 @@ void Tree::Node::output(Node *node, int space) const {
         cout<<" ";
     cout << node->_data << ":";
     if(node->_color == BLACK)
-        cout <<"B\n";
+        cout <<"B";
     else if(node->_color == RED)
-        cout << "R\n";
+        cout << "R";
+    cout << ": s = " << node->_size << '\n';
+
     output(node->_left, space);
 }
 void Tree::clearMemory(Node* node) {
@@ -89,22 +91,27 @@ void Tree::insert(int data) {
     }
 
     Node* x = root;
-    Node* y = nullptr;
+    Node* parent = nullptr;
     while (x != nullptr){
-        y = x;
+        parent = x;
         if (x->_data < node->_data)
             x = x->_right;
         else
             x = x->_left;
     }
-    node->_parent = y;
-    if (y == nullptr)
+    node->_parent = parent;
+    if (parent == nullptr)
         root = node;
     else{
-        if (y->_data > node->_data)
-            y->_left = node;
+        if (parent->_data > node->_data)
+            parent->_left = node;
         else
-            y->_right = node;
+            parent->_right = node;
+    }
+
+    while (parent != nullptr){
+        parent->_size++;
+        parent = parent->_parent;
     }
     fixInsertion(node);
 }
@@ -122,14 +129,19 @@ void Tree::erase(int data){
 void Tree::erase(Node *node) {
 
     Node* tempNode;
+    Node* parent = node->_parent;
     if (node->_color == RED){
         if (node->_right == nullptr && node->_left == nullptr){ // R0
-            if (node->_parent->_right == node)
-                node->_parent->_right = nullptr;
+            if (parent->_right == node)
+                parent->_right = nullptr;
             else
-                node->_parent->_left = nullptr;
+                parent->_left = nullptr;
 
             clearMemory(node);
+            while (parent != nullptr){
+                parent->_size--;
+                parent = parent->_parent;
+            }
             return;
                                                                // R1 not exist
         } else {                                               // R2
@@ -142,13 +154,17 @@ void Tree::erase(Node *node) {
     } else {
         if (node->_right == nullptr && node->_left == nullptr){ //B0
             fixErasing(node);
-            if (node->_parent->_left == node)
-                node->_parent->_left = nullptr;
+            if (parent->_left == node)
+                parent->_left = nullptr;
             else
-                node->_parent->_right = nullptr;
+                parent->_right = nullptr;
 
 
             clearMemory(node);
+            while (parent != nullptr){
+                parent->_size--;
+                parent = parent->_parent;
+            }
             return;
         }
 
@@ -163,6 +179,10 @@ void Tree::erase(Node *node) {
 
                 clearMemory(node->_left);
                 node->_left = nullptr;
+            }
+            while (parent != nullptr){
+                parent->_size--;
+                parent = parent->_parent;
             }
             return;
         }
@@ -308,6 +328,14 @@ void Tree::leftRotate(Node *node) {
 
     rightSon->_left = node;
     node->_parent = rightSon;
+
+
+    rightSon->_size = node->_size;
+    node->_size = 1;
+    if (node->_left != nullptr)
+        node->_size += node->_left->_size;
+    if (node->_left != nullptr)
+        node->_size += node->_right->_size;
 }
 void Tree::rightRotate(Node *node) {
 
@@ -326,4 +354,11 @@ void Tree::rightRotate(Node *node) {
 
     leftSon->_right = node;
     node->_parent = leftSon;
+
+    leftSon->_size = node->_size;
+    node->_size = 1;
+    if (node->_left != nullptr)
+        node->_size += node->_left->_size;
+    if (node->_left != nullptr)
+        node->_size += node->_right->_size;
 }
