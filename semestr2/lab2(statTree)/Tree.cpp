@@ -169,6 +169,7 @@ void Tree::erase(Node *node) {
         }
 
         if (node->_right == nullptr || node->_left == nullptr){ //B1
+            parent = node;
             if (node->_right != nullptr) {
                 node->_data = node->_right->_data;
 
@@ -180,6 +181,7 @@ void Tree::erase(Node *node) {
                 clearMemory(node->_left);
                 node->_left = nullptr;
             }
+
             while (parent != nullptr){
                 parent->_size--;
                 parent = parent->_parent;
@@ -315,7 +317,7 @@ void Tree::fixErasing(Node *node) {
 void Tree::leftRotate(Node *node) {
     Node *rightSon = node->_right;
     node->_right = rightSon->_left;
-    
+
     if (rightSon->_left != nullptr)
         rightSon->_left->_parent = node;
     rightSon->_parent = node->_parent;
