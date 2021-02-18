@@ -108,43 +108,71 @@ void Tree::insert(int data) {
     }
     fixInsertion(node);
 }
+
 void Tree::erase(int data){
     Node* node = search(data);
+
     if (node == nullptr){
         cout << "There isn't vertex with given data\n";
         return;
     }
 
-    Node* parent = node->_parent;
-    Node *tempNode, *child = nullptr;
+    erase(node);
+}
+void Tree::erase(Node *node) {
 
-    if (node->_left == nullptr || node->_right == nullptr)
-        tempNode = node;
-    else
-        tempNode = getSuccessor(node);
+    Node* tempNode;
+    if (node->_color == RED){
+        if (node->_right == nullptr && node->_left == nullptr){ // R0
+            if (node->_parent->_right == node)
+                node->_parent->_right = nullptr;
+            else
+                node->_parent->_left = nullptr;
 
-    if (tempNode->_left != nullptr)
-        child = tempNode->_left;
-    else
-        child = tempNode->_right;
+            clearMemory(node);
+            return;
+                                                               // R1 not exist
+        } else {                                               // R2
+            tempNode = getSuccessor(node);
+            node->_data = tempNode->_data;
+            erase(tempNode);
+            return;
+        }
 
-    if (child != nullptr)
-        child->_parent = tempNode->_parent;
+    } else {
+        if (node->_right == nullptr && node->_left == nullptr){ //B0
+            fixErasing(node);
+            if (node->_parent->_left == node)
+                node->_parent->_left = nullptr;
+            else
+                node->_parent->_right = nullptr;
 
-    if (tempNode->_parent == nullptr)
-        root = node;
-    else if(tempNode == parent->_left)
-        parent->_left = node;
-    else
-        parent->_right = node;
 
-    if (tempNode != node)
-        node->_data = tempNode->_data;
+            clearMemory(node);
+            return;
+        }
 
-    if (tempNode->_color == BLACK)
-        fixErasing(tempNode);
+        if (node->_right == nullptr || node->_left == nullptr){ //B1
+            if (node->_right != nullptr) {
+                node->_data = node->_right->_data;
 
-    delete tempNode;
+                clearMemory(node->_right);
+                node->_right = nullptr;
+            } else {
+                node->_data = node->_left->_data;
+
+                clearMemory(node->_left);
+                node->_left = nullptr;
+            }
+            return;
+        }
+        if (node->_right != nullptr && node->_left != nullptr){ //B2
+            tempNode = getSuccessor(node);
+            node->_data = tempNode->_data;
+            erase(tempNode);
+            return;
+        }
+    }
 }
 
 void Tree::fixInsertion(Node *node) {
@@ -152,7 +180,6 @@ void Tree::fixInsertion(Node *node) {
         root->_color = BLACK;
         return;
     }
-
     while(node->_parent != nullptr && node->_parent->_color == RED){
         if (node->_parent == node->_parent->_parent->_left){
             Node* uncle = node->_parent->_parent->_right;
@@ -191,14 +218,10 @@ void Tree::fixInsertion(Node *node) {
     root->_color = BLACK;
 }
 void Tree::fixErasing(Node *node) {
-    cout << "\nFIXING\n";
-    node->output(node, 0);
     while (node != root && node->_color == BLACK) {
         Node* parent = node->_parent;
-        parent->output(node, 1);
         if (parent->_left == node) {
             Node* brother = parent->_right;
-            cout << "1\n";
             if (brother->_color == RED) {
                 brother->_color = BLACK;
                 parent->_color = RED;
@@ -206,23 +229,20 @@ void Tree::fixErasing(Node *node) {
                 leftRotate(parent);
                 brother = parent->_right;
             }
-            cout << "2\n";
             if ((brother->_left == nullptr || brother->_left->_color == BLACK) &&
                 (brother->_right == nullptr || brother->_right->_color == BLACK)) {
-                cout << "3\n";
                 brother->_color = RED;
-                node = parent;
-                parent = node->_parent;
+                node = node->_parent;
 
-            } else if (brother->_right == nullptr || brother->_right->_color == BLACK) {
-                brother->_color = RED;
-                brother->_left->_color = BLACK;
+            } else {
+                if (brother->_right == nullptr || brother->_right->_color == BLACK) {
+                    brother->_color = RED;
+                    brother->_left->_color = BLACK;
 
-                rightRotate(brother);
-                brother = parent->_right;
-            }
+                    rightRotate(brother);
+                    brother = parent->_right;
+                }
 
-            if (parent) {
                 brother->_color = parent->_color;
                 parent->_color = BLACK;
 
@@ -230,12 +250,11 @@ void Tree::fixErasing(Node *node) {
                     brother->_right->_color = BLACK;
 
                 leftRotate(parent);
-            }
 
-            node = root;
+                node = root;
+            }
         } else {
             Node* brother = parent->_left;
-
             if (brother->_color == RED) {
                 brother->_color = BLACK;
                 parent->_color = RED;
@@ -246,32 +265,30 @@ void Tree::fixErasing(Node *node) {
 
             if ((brother->_left == nullptr || brother->_left->_color == BLACK) &&
                 (brother->_right == nullptr || brother->_right->_color == BLACK)) {
-
                 brother->_color = RED;
-                node = parent;
-                parent = node->_parent;
-            } else if (brother->_left == nullptr || brother->_left->_color == BLACK) {
-                brother->_color = RED;
-                brother->_right->_color = BLACK;
+                node = node->_parent;
 
-                leftRotate(brother);
-                brother = parent->_left;
-            }
+            } else {
+                if (brother->_left == nullptr || brother->_left->_color == BLACK) {
+                    brother->_color = RED;
+                    brother->_right->_color = BLACK;
 
-            if (parent) {
+                    leftRotate(brother);
+                    brother = parent->_left;
+                }
+
                 brother->_color = parent->_color;
-                parent->_color  = BLACK;
+                parent->_color = BLACK;
 
                 if (brother->_left)
                     brother->_left->_color = BLACK;
 
                 rightRotate(parent);
-            }
 
-            node = root;
+                node = root;
+            }
         }
     }
-
     node->_color = BLACK;
 }
 

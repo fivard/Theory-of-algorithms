@@ -7,7 +7,7 @@ int main() {
         //tree.output();
     }
     tree.output();
-    tree.erase(12);
+    tree.erase(7);
     tree.output();
     //tree.erase(14);
     //tree.output();

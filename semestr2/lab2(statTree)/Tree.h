@@ -42,7 +42,9 @@ public:
     Node* getSuccessor(Node* node);
     Node* getMinNode(Node* node) const;
     void output() const;
+
     void erase(int data);
+    void erase(Node* node);
 };
 
 #endif //LAB2_STATTREE_TREE_H
