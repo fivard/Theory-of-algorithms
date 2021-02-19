@@ -11,26 +11,6 @@ Tree::Node::Node(int data) {
     _left = _right = _parent = nullptr;
 }
 
-void Tree::Node::output(Node *node, int space) const {
-    if (node == nullptr)
-        return;
-
-    space += 10;
-
-    output(node->_right, space);
-
-    cout << std::endl;
-    for (int i = 10; i < space; i++)
-        cout<<" ";
-    cout << node->_data << ":";
-    if(node->_color == BLACK)
-        cout <<"B";
-    else if(node->_color == RED)
-        cout << "R";
-    cout << ": s = " << node->_size << '\n';
-
-    output(node->_left, space);
-}
 void Tree::clearMemory(Node* node) {
     if (node != nullptr){
         if (node->_right)
@@ -48,10 +28,6 @@ Tree::~Tree() {
     clearMemory(root);
 }
 
-void Tree::output() const {
-    cout << "\nTree:\n";
-    root->output(root, 0);
-}
 Tree::Node* Tree::search(int data) {
     Node* temp = root;
     while (temp != nullptr && temp->_data != data){
@@ -127,7 +103,11 @@ void Tree::erase(int data){
     erase(node);
 }
 void Tree::erase(Node *node) {
-
+    if (node == root && node->_size == 1){
+        clearMemory(root);
+        root = nullptr;
+        return;
+    }
     Node* tempNode;
     Node* parent = node->_parent;
     if (node->_color == RED){

@@ -2,12 +2,15 @@
 
 int main() {
     Tree tree;
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 10; i++)
         tree.insert(i);
-
-    for (int i = 0; i < 19; i++) {
+    tree.Dump();
+    for (int i = 0; i < 10; i++) {
         tree.erase(i);
-        tree.output();
+        cout << "-----------------------------DELETE ";
+        cout << i;
+        cout << "-----------------------------\n";
+        tree.Dump();
     }
     return 0;
 }
