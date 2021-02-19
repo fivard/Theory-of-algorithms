@@ -11,6 +11,26 @@ Tree::Node::Node(int data) {
     _left = _right = _parent = nullptr;
 }
 
+void Tree::Node::output(Node *node, int space) const {
+    if (node == nullptr)
+        return;
+
+    space += 10;
+
+    output(node->_right, space);
+
+    cout << std::endl;
+    for (int i = 10; i < space; i++)
+        cout<<" ";
+    cout << node->_data << ":";
+    if(node->_color == BLACK)
+        cout <<"B";
+    else if(node->_color == RED)
+        cout << "R";
+    cout << ": s = " << node->_size << '\n';
+
+    output(node->_left, space);
+}
 void Tree::clearMemory(Node* node) {
     if (node != nullptr){
         if (node->_right)
@@ -27,6 +47,7 @@ Tree::Tree() {
 Tree::~Tree() {
     clearMemory(root);
 }
+
 
 Tree::Node* Tree::search(int data) {
     Node* temp = root;
@@ -57,6 +78,26 @@ Tree::Node* Tree::getMinNode(Node *node) const{
 
     return node;
 }
+
+Tree::Node* Tree::getStat(Node* node, int index){
+    int curPos = 1;
+    if (node->_left != nullptr)
+        curPos += node->_left->_size;
+
+    if(curPos == index)
+        return node;
+    if(curPos > index)
+        return getStat(node->_left, index);
+    else
+        return getStat(node->_right, index - curPos);
+
+}
+int Tree::getStat(int index){
+    Node* res = getStat(root, index);
+    return res->_data;
+
+}
+
 void Tree::insert(int data) {
     Node *node = new Node(data);
     if (root == nullptr){
@@ -342,4 +383,13 @@ void Tree::rightRotate(Node *node) {
         node->_size += node->_left->_size;
     if (node->_right != nullptr)
         node->_size += node->_right->_size;
+}
+
+void Tree::output() const {
+    cout << "\nTree:\n";
+    if (root == nullptr){
+        cout << "Tree is empty\n";
+        return;
+    }
+    root->output(root, 0);
 }

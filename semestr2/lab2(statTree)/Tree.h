@@ -30,6 +30,7 @@ class Tree {
             return (left_depth > right_depth ? left_depth : right_depth) + 1;
         }
 
+        void output(Node *node, int space) const;
     };
     Node* root;
     void clearMemory(Node* node);
@@ -43,14 +44,21 @@ class Tree {
 public:
     Tree();
     ~Tree();
-    void insert(int data);
-    Node* search(int data);
+
+    Node* getRoot(){return root;}
+
     Node* getSuccessor(Node* node);
     Node* getMinNode(Node* node) const;
+    Node* getStat(Node* node, int rank);
+    int getStat(int rank);
+
+    void insert(int data);
+    Node* search(int data);
 
     void erase(int data);
     void erase(Node* node);
 
+    void output() const;
     //next code was copyrighted from
     //https://stackoverflow.com/questions/36802354/print-binary-tree-in-a-pretty-way-using-c
     struct cell_display {
