@@ -71,9 +71,6 @@ private:
                         zigZig(toSplay, false);
                     else
                         zigZag(toSplay, true);
-            cout << "-----------------------------------------------\n";
-            output();
-            cout << "-----------------------------------------------\n";
         }
 
 
@@ -84,8 +81,7 @@ private:
     }
 
     void zig(Node* toSplay, bool leftSide){
-        cout<< "Zig" << endl;
-
+        cout<< "Zig " << leftSide << " " << toSplay->value << endl;
         Node* parent = toSplay->parent;
         if(leftSide){
 
@@ -121,7 +117,7 @@ private:
     }
     void zigZig(Node* toSplay, bool leftSide){
 
-        cout<< "Zigzig " << leftSide << endl;
+        cout<< "Zigzig " << leftSide << " " << toSplay->value << endl;
 
         Node* parent = toSplay->parent;
         Node* gran = parent->parent;
@@ -167,7 +163,7 @@ private:
 
     }
     void zigZag(Node* toSplay, bool leftSide){
-        cout<< "Zigzag" << endl;
+        cout<< "Zigzag " << leftSide << " " << toSplay->value << endl;
 
         Node* parent = toSplay->parent;
         Node* grand = parent->parent;
@@ -185,7 +181,6 @@ private:
             toSplay->left = parent;
             toSplay->right = grand;
             parent->parent = toSplay;
-            grand->parent = toSplay;
 
         } else{
 
@@ -200,19 +195,16 @@ private:
             toSplay->right = parent;
             toSplay->left = grand;
             parent->parent = toSplay;
-            grand->parent = toSplay;
-
         }
 
+        toSplay->parent = grand->parent;
         if(grand->parent != nullptr){
-            toSplay->parent = grand->parent;
             if(grand == grand->parent->left)
                 grand->parent->left = toSplay;
             else
                 grand->parent->right = toSplay;
         }
-        grand->parent = parent;
-        parent->parent = toSplay;
+        grand->parent = toSplay;
 
     }
 
@@ -316,8 +308,6 @@ public:
     ~SplayTree() = default;
 
     void insert(int& t){
-        if(root == nullptr)
-            cout << "LOL\n";
         if(root == nullptr){
             root = new Node(t);
             return;
