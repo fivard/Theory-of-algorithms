@@ -6,7 +6,6 @@
 #define LAB3_SPLAYTREE__SPLAYTREE_H
 
 #include <vector>
-#include <sstream>
 #include <algorithm>
 
 using namespace std;

@@ -13,7 +13,7 @@ int main() {
 
     shuffle(arr.begin(), arr.end(), std::mt19937(std::random_device()()));
 
-    for(int & i : arr){
+    for(int i : arr){
         cout << "Wanted " << i << "...\n";
         tree.insert(i);
         std::cout << "-----------------------inserted" << i << "-----------------" << std::endl;
