@@ -9,30 +9,31 @@
 #include <algorithm>
 #include <iostream>
 
-const double INF = INT_MAX;
-
 using namespace std;
 
 class OptimalBinaryTree{
-
 private:
 
     class Node {
-
     public:
-        int value;
-        Node *parent;
-        Node *left;
-        Node *right;
+        int     value;
+        double  probability;
+        bool    mainKey;
 
-        Node() {
+        Node    *parent;
+        Node    *left;
+        Node    *right;
+
+                 Node() {
             left = right = parent = nullptr;
         }
-        explicit Node(int value) {
+        explicit Node(int value, double probability, bool mainKey){
             this->value = value;
+            this->probability = probability;
+            this->mainKey = mainKey;
             left = right = parent = nullptr;
         }
-        ~Node() = default;
+                ~Node() = default;
 
         void output(Node *node, int space) const {
             if (node == nullptr)
@@ -45,7 +46,7 @@ private:
             cout << endl;
             for (int i = 10; i < space; i++)
                 cout << " ";
-            cout << node->value << "\n";
+            cout << node->value << ":" << node->probability << "\n";
             output(node->left, space);
         }
     };
@@ -83,34 +84,47 @@ private:
                         expectedValue[i][j] = t;
                         roots[i][j]         = r;
                     }
-
                 }
             }
         }
-
+        cout << "weights:\n";
         for (int i = 1; i <= countKeys+1; i++) {
             for (int j = 0; j <= countKeys; j++)
                 cout << weights[i][j] << '\t';
             cout << endl;
         }
         cout << endl;
-    };
-    void generateTree(){
+        cout << "roots:\n";
         for (int i = 1; i <= countKeys; i++) {
             for (int j = 1; j <= countKeys; j++)
                 cout << roots[i][j] << '\t';
             cout << endl;
         }
         cout << endl;
+        cout << "expected value:\n";
         for (int i = 1; i <= countKeys+1; i++) {
             for (int j = 0; j <= countKeys; j++)
                 cout << expectedValue[i][j] << '\t';
             cout << endl;
         }
     };
+
+    [[ nodiscard ]] Node* generateTree(int i, int j, Node* parent){
+        if (j == i - 1){
+            return new Node(0, fictitiousKeys[i-1], false);
+        }
+
+        int currentNode = roots[i][j];
+        Node *node = new Node(currentNode, keys[ currentNode ], true);
+        node->parent = parent;
+        node->left = generateTree(i, currentNode - 1, node);
+        node->right = generateTree( currentNode + 1, j, node);
+
+        return node;
+    };
 public:
     OptimalBinaryTree(const int count, const double* newKeys, const double* newFictitiousKeys){
-        root = nullptr;
+        root      = nullptr;
         countKeys = count;
 
         keys = new double [countKeys + 1];
@@ -123,14 +137,22 @@ public:
 
         expectedValue = new double* [count + 2];
         for (int i = 1; i < count + 2; i++)
-            expectedValue[i] = new double [count];
+            expectedValue[i] = new double [count+1];
 
         roots = new int* [count + 1];
         for (int i = 1; i < count + 1; i++)
             roots[i] = new int [count + 1];
 
+        for (int i = 1; i <= countKeys; i++)
+            for (int j = 1; j <= countKeys; j++)
+                roots[i][j] = 0;
+
+        for (int i = 1; i <= countKeys+1; i++)
+            for (int j = 0; j <= countKeys; j++)
+                expectedValue[i][j] = 0;
+
         generateTables();
-        generateTree();
+        root = generateTree(1, countKeys, nullptr);
     }
     ~OptimalBinaryTree(){
         delete keys;
