@@ -52,10 +52,9 @@ void Tree::Node::output(Node *node, int space) const {
 }
 void Tree::clearMemory(Node* node) {
     if (node != nullptr){
-        if (node->_right)
-            clearMemory(node->_right);
-        if (node->_left)
-            clearMemory(node->_left);
+        clearMemory(node->_right);
+        clearMemory(node->_left);
+
         delete node;
     }
 }
@@ -68,10 +67,9 @@ Tree::Tree(Node* root){
     this->root = root;
     previousRoots.clear();
 }
-Tree::~Tree() { //TODO
-    //for (auto &i : previousRoots)
-        //clearMemory(i);
-    clearMemory(root);
+Tree::~Tree() { 
+    for (auto &i : previousRoots)
+        clearMemory(i);
 }
 
 Tree::Node* Tree::search(int data) {

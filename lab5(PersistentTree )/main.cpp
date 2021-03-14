@@ -13,7 +13,7 @@ int main() {
     }
 
     tree.DumpAllRoots();
-    
+
     tree.backUpPreviousRoot(tree.previousRoots[5]);
     tree.Dump();
 
