@@ -16,7 +16,7 @@ using namespace std;
 typedef enum {BLACK, RED} nodeColor;
 
 class Tree {
-
+private:
     class Node {
 
     public:
@@ -27,7 +27,9 @@ class Tree {
         int _data;
 
         explicit Node(int data);
-        int max_depth() const {
+        Node(Node* node, Node* parent); // care, changes parent of node's sons to this
+
+        [[nodiscard]] int max_depth() const {
             const int left_depth = _left ? _left->max_depth() : 0;
             const int right_depth = _right ? _right->max_depth() : 0;
             return (left_depth > right_depth ? left_depth : right_depth) + 1;
@@ -35,7 +37,6 @@ class Tree {
 
         void output(Node *node, int space) const;
     };
-    Node* root;
     void clearMemory(Node* node);
 
     void fixInsertion(Node* node);
@@ -46,23 +47,28 @@ class Tree {
 
     void erase(Node* node);
 
-    int get_max_depth() const { return root ? root->max_depth() : 0; }
+    [[nodiscard]] int get_max_depth() const { return root ? root->max_depth() : 0; }
+
+private:
+    Node* root;
+    vector<Node*> previousRoots;
 
 public:
     Tree();
+    explicit Tree(Node* root);
     ~Tree();
 
-    Node* getRoot(){return root;}
+    [[nodiscard]] Node* getSuccessor(Node* node);
+    [[nodiscard]] Node* getMinNode(Node* node) const;
 
-    Node* getSuccessor(Node* node);
-    Node* getMinNode(Node* node) const;
+    [[nodiscard]] Node* search(int data);
 
     void insert(int data);
-    Node* search(int data);
-
     void erase(int data);
 
     void output() const;
+    void DumpAllRoots();
+
     //next code was copyrighted from
     //https://stackoverflow.com/questions/36802354/print-binary-tree-in-a-pretty-way-using-c
     struct cell_display {
@@ -75,7 +81,8 @@ public:
     display_rows get_row_display() const {
         vector<Node*> traversal_stack;
         vector< std::vector<Node*> > rows;
-        if(!root) return display_rows();
+        if(!root)
+            return display_rows();
 
         Node *p = root;
         const int max_depth = root->max_depth();
@@ -119,9 +126,10 @@ public:
                 if(pn) {
                     ss << pn->_data << ":";
                     if (pn->_color == RED)
-                        ss << "R";
+                        ss << "R:";
                     else
-                        ss << "B";
+                        ss << "B:";
+                    ss << pn;
                     rows_disp.back().push_back(cell_display(ss.str()));
                     ss = std::stringstream();
                 } else {

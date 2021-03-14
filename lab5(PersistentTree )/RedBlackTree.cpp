@@ -11,6 +11,25 @@ Tree::Node::Node(int data) {
     _color = RED;
     _left = _right = _parent = nullptr;
 }
+Tree::Node::Node(Node* node, Node* parent){
+    _parent = parent;
+    _left = node->_left;
+    _right= node->_right;
+    _data = node->_data;
+    _color = node->_color;
+
+    if (node->_left != nullptr)
+        node->_left->_parent = this;
+    if (node->_right != nullptr)
+        node->_right->_parent = this;
+
+    if (parent != nullptr) {
+        if (parent->_right == node)
+            parent->_right = this;
+        else
+            parent->_left = this;
+    }
+}
 
 void Tree::Node::output(Node *node, int space) const {
     if (node == nullptr)
@@ -43,11 +62,17 @@ void Tree::clearMemory(Node* node) {
 
 Tree::Tree() {
     root = nullptr;
+    previousRoots.clear();
 }
-Tree::~Tree() {
+Tree::Tree(Node* root){
+    this->root = root;
+    previousRoots.clear();
+}
+Tree::~Tree() { //TODO
+    //for (auto &i : previousRoots)
+        //clearMemory(i);
     clearMemory(root);
 }
-
 
 Tree::Node* Tree::search(int data) {
     Node* temp = root;
@@ -82,32 +107,42 @@ Tree::Node* Tree::getMinNode(Node *node) const{
 void Tree::insert(int data) {
     Node *node = new Node(data);
     if (root == nullptr){
-        root = node;
+        root          = node;
         root->_parent = nullptr;
+
+        previousRoots.push_back(root);
         fixInsertion(root);
         return;
     }
 
-    Node* x = root;
-    Node* parent = nullptr;
-    while (x != nullptr){
-        parent = x;
-        if (x->_data < node->_data)
-            x = x->_right;
+    Node* temp   = new Node(root, nullptr);
+    root         = temp;
+    Node* parent;
+
+    while (temp != nullptr){
+        parent = temp;
+        if (temp->_data < node->_data)
+            if (temp->_right == nullptr)
+                temp = nullptr;
+            else
+                temp = new Node(temp->_right, temp);
         else
-            x = x->_left;
-    }
-    node->_parent = parent;
-    if (parent == nullptr)
-        root = node;
-    else{
-        if (parent->_data > node->_data)
-            parent->_left = node;
-        else
-            parent->_right = node;
+            if (temp->_left == nullptr)
+                temp = nullptr;
+            else
+                temp = new Node(temp->_left, temp);
     }
 
+    node->_parent = parent;
+
+    if (parent->_data > node->_data)
+        parent->_left = node;
+    else
+        parent->_right = node;
+
     fixInsertion(node);
+
+    previousRoots.push_back(root);
 }
 
 void Tree::erase(int data){
@@ -190,7 +225,12 @@ void Tree::fixInsertion(Node *node) {
     }
     while(node->_parent != nullptr && node->_parent->_color == RED){
         if (node->_parent == node->_parent->_parent->_left){
-            Node* uncle = node->_parent->_parent->_right;
+            Node* uncle;
+            if (node->_parent->_parent->_right == nullptr)
+                uncle = nullptr;
+            else
+                uncle = new Node(node->_parent->_parent->_right, node->_parent->_parent);
+
             if (uncle != nullptr && uncle->_color == RED){
                 node->_parent->_color = BLACK;
                 uncle->_color = BLACK;
@@ -206,7 +246,12 @@ void Tree::fixInsertion(Node *node) {
                 rightRotate(node->_parent->_parent);
             }
         } else {
-            Node* uncle = node->_parent->_parent->_left;
+            Node* uncle;
+            if (node->_parent->_parent->_left == nullptr)
+                uncle = nullptr;
+            else
+                uncle = new Node(node->_parent->_parent->_left, node->_parent->_parent);
+
             if (uncle != nullptr && uncle->_color == RED){
                 node->_parent->_color = BLACK;
                 uncle->_color = BLACK;
@@ -219,6 +264,7 @@ void Tree::fixInsertion(Node *node) {
                 }
                 node->_parent->_color = BLACK;
                 node->_parent->_parent->_color = RED;
+
                 leftRotate(node->_parent->_parent);
             }
         }
@@ -301,7 +347,7 @@ void Tree::fixErasing(Node *node) {
 }
 
 void Tree::leftRotate(Node *node) {
-    Node *rightSon = node->_right;
+    Node *rightSon = new Node(node->_right, node);
     node->_right = rightSon->_left;
 
     if (rightSon->_left != nullptr)
@@ -320,7 +366,7 @@ void Tree::leftRotate(Node *node) {
 }
 void Tree::rightRotate(Node *node) {
 
-    Node *leftSon = node->_left;
+    Node *leftSon = new Node(node->_left, node);
     node->_left = leftSon->_right;
 
     if (leftSon->_right != nullptr)
@@ -344,4 +390,11 @@ void Tree::output() const {
         return;
     }
     root->output(root, 0);
+}
+void Tree::DumpAllRoots() {
+    for (int i = 0; i < previousRoots.size(); i++){
+        cout << "---------------------------------" << i << "--------------------------\n";
+        Tree tree(previousRoots[i]);
+        tree.Dump();
+    }
 }
