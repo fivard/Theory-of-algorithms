@@ -81,25 +81,6 @@ Tree::Node* Tree::getMinNode(Node *node) const{
     return node;
 }
 
-Tree::Node* Tree::getStat(Node* node, int index){
-    int curPos = 1;
-    if (node->_left != nullptr)
-        curPos += node->_left->_size;
-
-    if(curPos == index)
-        return node;
-    if(curPos > index)
-        return getStat(node->_left, index);
-    else
-        return getStat(node->_right, index - curPos);
-
-}
-int Tree::getStat(int index){
-    Node* res = getStat(root, index);
-    return res->_data;
-
-}
-
 void Tree::insert(int data) {
     Node *node = new Node(data);
     if (root == nullptr){

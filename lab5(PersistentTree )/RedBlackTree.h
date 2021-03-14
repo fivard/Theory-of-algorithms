@@ -25,7 +25,6 @@ class Tree {
         Node *_parent;
         nodeColor _color;
         int _data;
-        unsigned int _size;
 
         explicit Node(int data);
         int max_depth() const {
@@ -53,8 +52,6 @@ public:
 
     Node* getSuccessor(Node* node);
     Node* getMinNode(Node* node) const;
-    Node* getStat(Node* node, int rank);
-    int getStat(int rank);
 
     void insert(int data);
     Node* search(int data);
@@ -122,7 +119,6 @@ public:
                         ss << "R:";
                     else
                         ss << "B:";
-                    ss << pn->_size;
                     rows_disp.back().push_back(cell_display(ss.str()));
                     ss = std::stringstream();
                 } else {
