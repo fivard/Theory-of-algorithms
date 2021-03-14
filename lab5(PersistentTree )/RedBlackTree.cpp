@@ -75,12 +75,24 @@ Tree::~Tree() { //TODO
 }
 
 Tree::Node* Tree::search(int data) {
-    Node* temp = root;
+    Node* temp   = new Node(root, nullptr);
+    root         = temp;
+
     while (temp != nullptr && temp->_data != data){
-        if (temp->_data > data)
-            temp = temp->_left;
+        if (temp->_data < data)
+
+            if (temp->_right == nullptr)
+                temp = nullptr;
+            else
+                temp = new Node(temp->_right, temp);
+
         else
-            temp = temp->_right;
+
+            if (temp->_left == nullptr)
+                temp = nullptr;
+            else
+                temp = new Node(temp->_left, temp);
+
     }
     return temp;
 }
@@ -99,7 +111,7 @@ Tree::Node* Tree::getSuccessor(Node *node) {
 }
 Tree::Node* Tree::getMinNode(Node *node) const{
     while (node && node->_left)
-        node = node->_left;
+        node = new Node(node->_left, node);
 
     return node;
 }
@@ -159,8 +171,10 @@ void Tree::erase(Node *node) {
     if (node == root && node->_left == nullptr && node->_right == nullptr){
         clearMemory(root);
         root = nullptr;
+        previousRoots.push_back(nullptr);
         return;
     }
+
     Node* tempNode;
     Node* parent = node->_parent;
     if (node->_color == RED){
@@ -171,6 +185,7 @@ void Tree::erase(Node *node) {
                 parent->_left = nullptr;
 
             clearMemory(node);
+            previousRoots.push_back(root);
             return;
                                                                // R1 not exist
         } else {                                               // R2
@@ -190,11 +205,11 @@ void Tree::erase(Node *node) {
 
 
             clearMemory(node);
+            previousRoots.push_back(root);
             return;
         }
 
         if (node->_right == nullptr || node->_left == nullptr){ //B1
-            parent = node;
             if (node->_right != nullptr) {
                 node->_data = node->_right->_data;
 
@@ -207,6 +222,7 @@ void Tree::erase(Node *node) {
                 node->_left = nullptr;
             }
 
+            previousRoots.push_back(root);
             return;
         }
         if (node->_right != nullptr && node->_left != nullptr){ //B2
@@ -275,67 +291,77 @@ void Tree::fixErasing(Node *node) {
     while (node != root && node->_color == BLACK) {
         Node* parent = node->_parent;
         if (parent->_left == node) {
-            Node* brother = parent->_right;
+            Node* brother = new Node(parent->_right, parent);
+
             if (brother->_color == RED) {
                 brother->_color = BLACK;
                 parent->_color = RED;
 
                 leftRotate(parent);
-                brother = parent->_right;
+                brother = new Node(parent->_right, parent);
             }
             if ((brother->_left == nullptr || brother->_left->_color == BLACK) &&
                 (brother->_right == nullptr || brother->_right->_color == BLACK)) {
+
                 brother->_color = RED;
                 node = node->_parent;
 
             } else {
+
                 if (brother->_right == nullptr || brother->_right->_color == BLACK) {
                     brother->_color = RED;
-                    brother->_left->_color = BLACK;
+                    Node* brotherLeft = new Node(brother->_left, brother);
+                    brotherLeft->_color = BLACK;
 
                     rightRotate(brother);
-                    brother = parent->_right;
+                    brother = new Node(parent->_right, parent);
                 }
 
                 brother->_color = parent->_color;
                 parent->_color = BLACK;
 
-                if (brother->_right)
-                    brother->_right->_color = BLACK;
+                if (brother->_right) {
+                    Node* brotherRight = new Node(brother->_right, brother);
+                    brotherRight->_color = BLACK;
+                }
 
                 leftRotate(parent);
 
                 node = root;
             }
         } else {
-            Node* brother = parent->_left;
+            Node* brother = new Node(parent->_left, parent);
             if (brother->_color == RED) {
                 brother->_color = BLACK;
                 parent->_color = RED;
 
                 rightRotate(parent);
-                brother = parent->_left;
+                brother = new Node(parent->_left, parent);
             }
 
             if ((brother->_left == nullptr || brother->_left->_color == BLACK) &&
                 (brother->_right == nullptr || brother->_right->_color == BLACK)) {
+
                 brother->_color = RED;
                 node = node->_parent;
 
             } else {
                 if (brother->_left == nullptr || brother->_left->_color == BLACK) {
                     brother->_color = RED;
-                    brother->_right->_color = BLACK;
+                    Node* brotherRight = new Node(brother->_right, brother);
+                    brotherRight->_color = BLACK;
 
                     leftRotate(brother);
-                    brother = parent->_left;
+                    brother = new Node(parent->_left, parent);
                 }
 
                 brother->_color = parent->_color;
                 parent->_color = BLACK;
 
-                if (brother->_left)
-                    brother->_left->_color = BLACK;
+                if (brother->_left) {
+                    Node* brotherLeft = new Node(brother->_left, brother);
+                    brotherLeft->_color = BLACK;
+                }
 
                 rightRotate(parent);
 
@@ -381,6 +407,23 @@ void Tree::rightRotate(Node *node) {
 
     leftSon->_right = node;
     node->_parent = leftSon;
+}
+
+void Tree::backUpPreviousRoot(Node *newRoot) {
+    root = newRoot;
+    previousRoots.push_back(root);
+    backUpTree(root);
+}
+void Tree::backUpTree(Node *node) {
+    if (node->_left != nullptr){
+        node->_left->_parent = node;
+        backUpTree(node->_left);
+    }
+    if (node->_right != nullptr){
+        node->_right->_parent = node;
+        backUpTree(node->_right);
+    }
+
 }
 
 void Tree::output() const {

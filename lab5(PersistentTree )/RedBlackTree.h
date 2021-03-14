@@ -37,20 +37,25 @@ private:
 
         void output(Node *node, int space) const;
     };
-    void clearMemory(Node* node);
-
-    void fixInsertion(Node* node);
-    void fixErasing(Node* node);
-
-    void leftRotate(Node* node);
-    void rightRotate(Node* node);
-
-    void erase(Node* node);
 
     [[nodiscard]] int get_max_depth() const { return root ? root->max_depth() : 0; }
 
+    void clearMemory(Node* node);
+
+    void fixInsertion(Node* node);// creates new nodes
+    void fixErasing(Node* node);  // creates new nodes
+
+    void leftRotate(Node* node);  // creates new nodes
+    void rightRotate(Node* node); // creates new nodes
+
+    void erase(Node* node);
+
+    void backUpTree(Node* node);
+
 private:
     Node* root;
+
+public:
     vector<Node*> previousRoots;
 
 public:
@@ -58,13 +63,15 @@ public:
     explicit Tree(Node* root);
     ~Tree();
 
-    [[nodiscard]] Node* getSuccessor(Node* node);
-    [[nodiscard]] Node* getMinNode(Node* node) const;
+    [[nodiscard]] Node* getSuccessor(Node* node); // has getMinNode which creates new nodes
+    [[nodiscard]] Node* getMinNode(Node* node) const; //creates new nodes
 
-    [[nodiscard]] Node* search(int data);
+    [[nodiscard]] Node* search(int data); //creates new nodes
 
-    void insert(int data);
-    void erase(int data);
+    void insert(int data); // creates new nodes
+    void erase(int data);  // creates new nodes
+
+    void backUpPreviousRoot(Node* newRoot);
 
     void output() const;
     void DumpAllRoots();
