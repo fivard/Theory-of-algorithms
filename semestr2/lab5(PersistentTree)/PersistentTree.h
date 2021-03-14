@@ -47,15 +47,18 @@ private:
 
     void erase(Node* node);
 
+    void backUpTree(Node* node);
+
     [[nodiscard]] int get_max_depth() const { return root ? root->max_depth() : 0; }
 
 private:
     Node* root;
+
+public:
     vector<Node*> previousRoots;
 
 public:
     PersistentTree();
-    explicit PersistentTree(Node* root);
     ~PersistentTree();
 
     [[nodiscard]] Node* getSuccessor(Node* node);
@@ -68,6 +71,8 @@ public:
 
     void output() const;
     void DumpAllRoots();
+
+    void backUpPreviousRoot(Node* newRoot);
 
     //next code was copyrighted from
     //https://stackoverflow.com/questions/36802354/print-binary-tree-in-a-pretty-way-using-c

@@ -66,10 +66,6 @@ PersistentTree::PersistentTree() {
     root = nullptr;
     previousRoots.clear();
 }
-PersistentTree::PersistentTree(Node* root){
-    this->root = root;
-    previousRoots.clear();
-}
 PersistentTree::~PersistentTree() {
     //for (auto &i : previousRoots)
         //clearMemory(i);
