@@ -15,7 +15,7 @@ int main() {
 
     tree.DumpAllRoots();
 
-    //cout << "BACK UP TREE №8\n";
+    cout << "BACK UP TREE number 8\n";
     tree.backUpPreviousRoot(tree.previousRoots[8]);
     tree.Dump();
 
