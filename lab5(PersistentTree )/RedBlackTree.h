@@ -40,8 +40,12 @@ class Tree {
 
     void fixInsertion(Node* node);
     void fixErasing(Node* node);
+
     void leftRotate(Node* node);
     void rightRotate(Node* node);
+
+    void erase(Node* node);
+
     int get_max_depth() const { return root ? root->max_depth() : 0; }
 
 public:
@@ -57,7 +61,6 @@ public:
     Node* search(int data);
 
     void erase(int data);
-    void erase(Node* node);
 
     void output() const;
     //next code was copyrighted from
@@ -116,9 +119,9 @@ public:
                 if(pn) {
                     ss << pn->_data << ":";
                     if (pn->_color == RED)
-                        ss << "R:";
+                        ss << "R";
                     else
-                        ss << "B:";
+                        ss << "B";
                     rows_disp.back().push_back(cell_display(ss.str()));
                     ss = std::stringstream();
                 } else {

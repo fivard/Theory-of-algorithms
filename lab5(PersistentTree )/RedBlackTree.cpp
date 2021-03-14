@@ -9,7 +9,6 @@ using namespace std;
 Tree::Node::Node(int data) {
     _data = data;
     _color = RED;
-    _size = 1;
     _left = _right = _parent = nullptr;
 }
 
@@ -29,7 +28,6 @@ void Tree::Node::output(Node *node, int space) const {
         cout <<"B";
     else if(node->_color == RED)
         cout << "R";
-    cout << ": s = " << node->_size << '\n';
 
     output(node->_left, space);
 }
@@ -109,10 +107,6 @@ void Tree::insert(int data) {
             parent->_right = node;
     }
 
-    while (parent != nullptr){
-        parent->_size++;
-        parent = parent->_parent;
-    }
     fixInsertion(node);
 }
 
@@ -127,7 +121,7 @@ void Tree::erase(int data){
     erase(node);
 }
 void Tree::erase(Node *node) {
-    if (node == root && node->_size == 1){
+    if (node == root && node->_left == nullptr && node->_right == nullptr){
         clearMemory(root);
         root = nullptr;
         return;
@@ -142,12 +136,8 @@ void Tree::erase(Node *node) {
                 parent->_left = nullptr;
 
             clearMemory(node);
-            while (parent != nullptr){
-                parent->_size--;
-                parent = parent->_parent;
-            }
             return;
-            // R1 not exist
+                                                               // R1 not exist
         } else {                                               // R2
             tempNode = getSuccessor(node);
             node->_data = tempNode->_data;
@@ -165,10 +155,6 @@ void Tree::erase(Node *node) {
 
 
             clearMemory(node);
-            while (parent != nullptr){
-                parent->_size--;
-                parent = parent->_parent;
-            }
             return;
         }
 
@@ -186,10 +172,6 @@ void Tree::erase(Node *node) {
                 node->_left = nullptr;
             }
 
-            while (parent != nullptr){
-                parent->_size--;
-                parent = parent->_parent;
-            }
             return;
         }
         if (node->_right != nullptr && node->_left != nullptr){ //B2
@@ -335,12 +317,6 @@ void Tree::leftRotate(Node *node) {
     rightSon->_left = node;
     node->_parent = rightSon;
 
-    rightSon->_size = node->_size;
-    node->_size = 1;
-    if (node->_left != nullptr)
-        node->_size += node->_left->_size;
-    if (node->_right != nullptr)
-        node->_size += node->_right->_size;
 }
 void Tree::rightRotate(Node *node) {
 
@@ -359,13 +335,6 @@ void Tree::rightRotate(Node *node) {
 
     leftSon->_right = node;
     node->_parent = leftSon;
-
-    leftSon->_size = node->_size;
-    node->_size = 1;
-    if (node->_left != nullptr)
-        node->_size += node->_left->_size;
-    if (node->_right != nullptr)
-        node->_size += node->_right->_size;
 }
 
 void Tree::output() const {
