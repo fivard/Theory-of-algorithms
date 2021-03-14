@@ -53,10 +53,8 @@ void PersistentTree::Node::output(Node *node, int space) const {
 }
 void PersistentTree::clearMemory(Node* node) {
     if (node != nullptr){
-        if (node->_right)
-            clearMemory(node->_right);
-        if (node->_left)
-            clearMemory(node->_left);
+        clearMemory(node->_right);
+        clearMemory(node->_left);
 
         delete node;
     }
@@ -71,29 +69,24 @@ PersistentTree::PersistentTree(Node* root){
     previousRoots.clear();
 }
 PersistentTree::~PersistentTree() {
-    //for (auto &i : previousRoots)
-        //clearMemory(i);
+    for (auto &i : previousRoots)
+        clearMemory(i);
 }
 
+<<<<<<< HEAD:semestr2/lab5(PersistentTree)/PersistentTree.cpp
 PersistentTree::Node* PersistentTree::search(int data) {
     Node* temp   = new Node(root, nullptr);
     root         = temp;
 
+=======
+Tree::Node* Tree::search(int data) {
+    Node* temp = root;
+>>>>>>> parent of d4ec7f6 ([ DONE ] deleting and backup):lab5(PersistentTree )/RedBlackTree.cpp
     while (temp != nullptr && temp->_data != data){
-        if (temp->_data < data)
-
-            if (temp->_right == nullptr)
-                temp = nullptr;
-            else
-                temp = new Node(temp->_right, temp);
-
+        if (temp->_data > data)
+            temp = temp->_left;
         else
-
-            if (temp->_left == nullptr)
-                temp = nullptr;
-            else
-                temp = new Node(temp->_left, temp);
-
+            temp = temp->_right;
     }
     return temp;
 }
@@ -112,7 +105,7 @@ PersistentTree::Node* PersistentTree::getSuccessor(Node *node) {
 }
 PersistentTree::Node* PersistentTree::getMinNode(Node *node) const{
     while (node && node->_left)
-        node = new Node(node->_left, node);
+        node = node->_left;
 
     return node;
 }
@@ -175,10 +168,8 @@ void PersistentTree::erase(Node *node) {
     if (node == root && node->_left == nullptr && node->_right == nullptr){
         clearMemory(root);
         root = nullptr;
-        previousRoots.push_back(nullptr);
         return;
     }
-
     Node* tempNode;
     Node* parent = node->_parent;
     if (node->_color == RED){
@@ -189,7 +180,6 @@ void PersistentTree::erase(Node *node) {
                 parent->_left = nullptr;
 
             clearMemory(node);
-            previousRoots.push_back(root);
             return;
                                                                // R1 not exist
         } else {                                               // R2
@@ -209,11 +199,11 @@ void PersistentTree::erase(Node *node) {
 
 
             clearMemory(node);
-            previousRoots.push_back(root);
             return;
         }
 
         if (node->_right == nullptr || node->_left == nullptr){ //B1
+            parent = node;
             if (node->_right != nullptr) {
                 node->_data = node->_right->_data;
 
@@ -226,7 +216,6 @@ void PersistentTree::erase(Node *node) {
                 node->_left = nullptr;
             }
 
-            previousRoots.push_back(root);
             return;
         }
         if (node->_right != nullptr && node->_left != nullptr){ //B2
@@ -295,77 +284,67 @@ void PersistentTree::fixErasing(Node *node) {
     while (node != root && node->_color == BLACK) {
         Node* parent = node->_parent;
         if (parent->_left == node) {
-            Node* brother = new Node(parent->_right, parent);
-
+            Node* brother = parent->_right;
             if (brother->_color == RED) {
                 brother->_color = BLACK;
                 parent->_color = RED;
 
                 leftRotate(parent);
-                brother = new Node(parent->_right, parent);
+                brother = parent->_right;
             }
             if ((brother->_left == nullptr || brother->_left->_color == BLACK) &&
                 (brother->_right == nullptr || brother->_right->_color == BLACK)) {
-
                 brother->_color = RED;
                 node = node->_parent;
 
             } else {
-
                 if (brother->_right == nullptr || brother->_right->_color == BLACK) {
                     brother->_color = RED;
-                    Node* brotherLeft = new Node(brother->_left, brother);
-                    brotherLeft->_color = BLACK;
+                    brother->_left->_color = BLACK;
 
                     rightRotate(brother);
-                    brother = new Node(parent->_right, parent);
+                    brother = parent->_right;
                 }
 
                 brother->_color = parent->_color;
                 parent->_color = BLACK;
 
-                if (brother->_right) {
-                    Node* brotherRight = new Node(brother->_right, brother);
-                    brotherRight->_color = BLACK;
-                }
+                if (brother->_right)
+                    brother->_right->_color = BLACK;
 
                 leftRotate(parent);
 
                 node = root;
             }
         } else {
-            Node* brother = new Node(parent->_left, parent);
+            Node* brother = parent->_left;
             if (brother->_color == RED) {
                 brother->_color = BLACK;
                 parent->_color = RED;
 
                 rightRotate(parent);
-                brother = new Node(parent->_left, parent);
+                brother = parent->_left;
             }
 
             if ((brother->_left == nullptr || brother->_left->_color == BLACK) &&
                 (brother->_right == nullptr || brother->_right->_color == BLACK)) {
-
                 brother->_color = RED;
                 node = node->_parent;
 
             } else {
                 if (brother->_left == nullptr || brother->_left->_color == BLACK) {
                     brother->_color = RED;
-                    Node* brotherRight = new Node(brother->_right, brother);
-                    brotherRight->_color = BLACK;
+                    brother->_right->_color = BLACK;
 
                     leftRotate(brother);
-                    brother = new Node(parent->_left, parent);
+                    brother = parent->_left;
                 }
 
                 brother->_color = parent->_color;
                 parent->_color = BLACK;
 
-                if (brother->_left) {
-                    Node* brotherLeft = new Node(brother->_left, brother);
-                    brotherLeft->_color = BLACK;
-                }
+                if (brother->_left)
+                    brother->_left->_color = BLACK;
 
                 rightRotate(parent);
 
@@ -413,6 +392,7 @@ void PersistentTree::rightRotate(Node *node) {
     node->_parent = leftSon;
 }
 
+<<<<<<< HEAD:semestr2/lab5(PersistentTree)/PersistentTree.cpp
 void PersistentTree::backUpPreviousRoot(Node *newRoot) {
     root = newRoot;
     backUpTree(root);
@@ -434,6 +414,9 @@ void PersistentTree::backUpTree(Node *node) {
 }
 
 void PersistentTree::output() const {
+=======
+void Tree::output() const {
+>>>>>>> parent of d4ec7f6 ([ DONE ] deleting and backup):lab5(PersistentTree )/RedBlackTree.cpp
     cout << "\nTree:\n";
     if (root == nullptr){
         cout << "Tree is empty\n";
