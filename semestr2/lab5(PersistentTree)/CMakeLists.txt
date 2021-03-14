@@ -3,4 +3,4 @@ project(lab5_PersistentTree__)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(lab5_PersistentTree__ main.cpp RedBlackTree.cpp RedBlackTree.h)
+add_executable(lab5_PersistentTree__ main.cpp PersistentTree.cpp PersistentTree.h)

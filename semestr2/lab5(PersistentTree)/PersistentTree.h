@@ -15,7 +15,7 @@ using namespace std;
 
 typedef enum {BLACK, RED} nodeColor;
 
-class Tree {
+class PersistentTree {
 private:
     class Node {
 
@@ -59,9 +59,9 @@ public:
     vector<Node*> previousRoots;
 
 public:
-    Tree();
-    explicit Tree(Node* root);
-    ~Tree();
+    PersistentTree();
+    explicit PersistentTree(Node* root);
+    ~PersistentTree();
 
     [[nodiscard]] Node* getSuccessor(Node* node); // has getMinNode which creates new nodes
     [[nodiscard]] Node* getMinNode(Node* node) const; //creates new nodes

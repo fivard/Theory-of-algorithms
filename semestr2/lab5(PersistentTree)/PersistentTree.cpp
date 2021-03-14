@@ -2,19 +2,20 @@
 // Created by Acer on 14.03.2021.
 //
 
-#include "RedBlackTree.h"
+#include "PersistentTree.h"
 
 using namespace std;
 
-Tree::Node::Node(int data) {
+PersistentTree::Node::Node(int data) {
     _data = data;
     _color = RED;
     _left = _right = _parent = nullptr;
 }
-Tree::Node::Node(Node* node, Node* parent){
+PersistentTree::Node::Node(Node* node, Node* parent){
     _parent = parent;
     _left = node->_left;
     _right= node->_right;
+    cout << "constructor - " << _left << ' ' << _right << '\n';
     _data = node->_data;
     _color = node->_color;
 
@@ -31,7 +32,7 @@ Tree::Node::Node(Node* node, Node* parent){
     }
 }
 
-void Tree::Node::output(Node *node, int space) const {
+void PersistentTree::Node::output(Node *node, int space) const {
     if (node == nullptr)
         return;
 
@@ -50,7 +51,7 @@ void Tree::Node::output(Node *node, int space) const {
 
     output(node->_left, space);
 }
-void Tree::clearMemory(Node* node) {
+void PersistentTree::clearMemory(Node* node) {
     if (node != nullptr){
         clearMemory(node->_right);
         clearMemory(node->_left);
@@ -59,20 +60,20 @@ void Tree::clearMemory(Node* node) {
     }
 }
 
-Tree::Tree() {
+PersistentTree::PersistentTree() {
     root = nullptr;
     previousRoots.clear();
 }
-Tree::Tree(Node* root){
+PersistentTree::PersistentTree(Node* root){
     this->root = root;
     previousRoots.clear();
 }
-Tree::~Tree() { 
+PersistentTree::~PersistentTree() {
     for (auto &i : previousRoots)
         clearMemory(i);
 }
 
-Tree::Node* Tree::search(int data) {
+PersistentTree::Node* PersistentTree::search(int data) {
     Node* temp   = new Node(root, nullptr);
     root         = temp;
 
@@ -94,7 +95,7 @@ Tree::Node* Tree::search(int data) {
     }
     return temp;
 }
-Tree::Node* Tree::getSuccessor(Node *node) {
+PersistentTree::Node* PersistentTree::getSuccessor(Node *node) {
     if (node->_right)
         return getMinNode(node->_right);
 
@@ -107,14 +108,14 @@ Tree::Node* Tree::getSuccessor(Node *node) {
 
     return successor;
 }
-Tree::Node* Tree::getMinNode(Node *node) const{
+PersistentTree::Node* PersistentTree::getMinNode(Node *node) const{
     while (node && node->_left)
         node = new Node(node->_left, node);
 
     return node;
 }
 
-void Tree::insert(int data) {
+void PersistentTree::insert(int data) {
     Node *node = new Node(data);
     if (root == nullptr){
         root          = node;
@@ -155,7 +156,7 @@ void Tree::insert(int data) {
     previousRoots.push_back(root);
 }
 
-void Tree::erase(int data){
+void PersistentTree::erase(int data){
     Node* node = search(data);
 
     if (node == nullptr){
@@ -163,9 +164,12 @@ void Tree::erase(int data){
         return;
     }
 
+    cout << "AFTER SEARCHING\n";
+    Dump();
+
     erase(node);
 }
-void Tree::erase(Node *node) {
+void PersistentTree::erase(Node *node) {
     if (node == root && node->_left == nullptr && node->_right == nullptr){
         clearMemory(root);
         root = nullptr;
@@ -232,7 +236,7 @@ void Tree::erase(Node *node) {
     }
 }
 
-void Tree::fixInsertion(Node *node) {
+void PersistentTree::fixInsertion(Node *node) {
     if (node == root) {
         root->_color = BLACK;
         return;
@@ -285,7 +289,7 @@ void Tree::fixInsertion(Node *node) {
     }
     root->_color = BLACK;
 }
-void Tree::fixErasing(Node *node) {
+void PersistentTree::fixErasing(Node *node) {
     while (node != root && node->_color == BLACK) {
         Node* parent = node->_parent;
         if (parent->_left == node) {
@@ -370,7 +374,7 @@ void Tree::fixErasing(Node *node) {
     node->_color = BLACK;
 }
 
-void Tree::leftRotate(Node *node) {
+void PersistentTree::leftRotate(Node *node) {
     Node *rightSon = new Node(node->_right, node);
     node->_right = rightSon->_left;
 
@@ -388,7 +392,7 @@ void Tree::leftRotate(Node *node) {
     node->_parent = rightSon;
 
 }
-void Tree::rightRotate(Node *node) {
+void PersistentTree::rightRotate(Node *node) {
 
     Node *leftSon = new Node(node->_left, node);
     node->_left = leftSon->_right;
@@ -407,24 +411,27 @@ void Tree::rightRotate(Node *node) {
     node->_parent = leftSon;
 }
 
-void Tree::backUpPreviousRoot(Node *newRoot) {
+void PersistentTree::backUpPreviousRoot(Node *newRoot) {
     root = newRoot;
-    previousRoots.push_back(root);
     backUpTree(root);
 }
-void Tree::backUpTree(Node *node) {
-    if (node->_left != nullptr){
-        node->_left->_parent = node;
-        backUpTree(node->_left);
+void PersistentTree::backUpTree(Node *node) {
+    if (node != nullptr) {
+        cout << node << "\n"
+             << "node->-left = " << node->_left << '\n'
+             << "node->_right = " << node->_right << '\n';
+        if (node->_left != nullptr) {
+            node->_left->_parent = node;
+            backUpTree(node->_left);
+        }
+        if (node->_right != nullptr) {
+            node->_right->_parent = node;
+            backUpTree(node->_right);
+        }
     }
-    if (node->_right != nullptr){
-        node->_right->_parent = node;
-        backUpTree(node->_right);
-    }
-
 }
 
-void Tree::output() const {
+void PersistentTree::output() const {
     cout << "\nTree:\n";
     if (root == nullptr){
         cout << "Tree is empty\n";
@@ -432,10 +439,12 @@ void Tree::output() const {
     }
     root->output(root, 0);
 }
-void Tree::DumpAllRoots() {
+void PersistentTree::DumpAllRoots() {
     for (int i = 0; i < previousRoots.size(); i++){
         cout << "---------------------------------" << i << "--------------------------\n";
-        Tree tree(previousRoots[i]);
-        tree.Dump();
+        cout << previousRoots[i] << '\n';
+        backUpPreviousRoot(previousRoots[i]);
+        cout << previousRoots[i] << '\n';
+        Dump();
     }
 }
