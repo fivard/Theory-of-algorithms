@@ -2,8 +2,11 @@
 
 int main() {
     PersistentTree tree;
-    for (int i = 0; i < 16; i += 2)
+    for (int i = 0; i < 16; i += 2) {
+        cout << "-------------------------INSERT " << i << "--------------------------------\n";
         tree.insert(i);
+        tree.Dump();
+    }
 
     tree.Dump();
 
@@ -18,8 +21,6 @@ int main() {
     cout << "BACK UP TREE number 8\n";
     tree.backUpPreviousRoot(tree.previousRoots[8]);
     tree.Dump();
-
-
 
     return 0;
 }
