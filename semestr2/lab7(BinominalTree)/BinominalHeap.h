@@ -5,68 +5,77 @@
 #ifndef LAB7_BINOMINALTREE__BINOMINALHEAP_H
 #define LAB7_BINOMINALTREE__BINOMINALHEAP_H
 
-template <class T>
-class BinominalHeap {
-private:
+#include <map>
 
-    class Node{
-    public:
-        Node* parent;
-        Node* sibling;
-        Node* child;
-        T     value;
-        int   degree{};
+const int INF = 10e6;
 
-        Node(){
-            parent = sibling = child = nullptr;
-            value = degree = 0;
-        }
-        explicit Node(T newValue): Node(){
-            value = newValue;
-        }
+template <typename T>
+class BinominalHeap;
 
-        void print(int countTabs) const{
-            for (int i = 0; i < countTabs; i++)
-                std::cout << '\t';
-            std::cout << value << ":" << degree;
-            if (child != nullptr) {
-                std::cout << std::endl;
-                child->print(countTabs + 1);
-            }
-            if (sibling != nullptr){
-                std::cout << std::endl;
-                sibling->print(countTabs);
-            }
+template <typename T>
+class Node{
+public:
+    Node* parent;
+    Node* sibling;
+    Node* child;
+    T     value;
+    int   degree{};
+public:
+             Node(){
+        parent = sibling = child = nullptr;
+        value = degree = 0;
+    }
+    explicit Node(T newValue): Node(){
+        value = newValue;
+    }
+
+    void print(int countTabs) const{
+        for (int i = 0; i < countTabs; i++)
+            std::cout << '\t';
+        std::cout << value << ":" << degree;
+        if (child != nullptr) {
             std::cout << std::endl;
+            child->print(countTabs + 1);
         }
-        void link(Node* other){
-            this->parent = other;
-            this->sibling = other->child;
-            other->child = this;
-            other->degree++;
+        if (sibling != nullptr){
+            std::cout << std::endl;
+            sibling->print(countTabs);
         }
+        std::cout << std::endl;
+    }
+    void link (Node* other){
+        this->parent = other;
+        this->sibling = other->child;
+        other->child = this;
+        other->degree++;
+    }
 
-        friend std::ostream& operator<< (std::ostream &out, const Node &node){
-            out << node.value;
-            return out;
-        }
-    };
+    friend std::ostream& operator<< (std::ostream &out, const Node &node){
+        out << node.value;
+        return out;
+    }
+    friend BinominalHeap<T>;
+};
 
-    Node* head;
+template <typename T>
+class BinominalHeap {
+public:
+    Node<T>* head;
 
 public:
-    BinominalHeap(){
+             BinominalHeap(){
         head = nullptr;
     }
     explicit BinominalHeap(T newValue){
-        head = new Node(newValue);
+        head = new Node<T>(newValue);
     }
-    ~BinominalHeap() = default;
+            ~BinominalHeap() = default;
 
-    void printBinominalHeap() const{
+    void print      () const{
         head->print(0);
     }
-    void mergeBinominalHeap(BinominalHeap<T> *first, BinominalHeap<T> *second) {
+    void merge      (BinominalHeap<T> *first, BinominalHeap<T> *second) {
+
         if (first->head == nullptr){
             head = second->head;
             return;
@@ -75,8 +84,8 @@ public:
             head = first->head;
             return;
         }
-        Node *firstTemp = first->head,
-            *secondTemp = second->head;
+        Node<T> *firstTemp = first->head,
+               *secondTemp = second->head;
 
         if (firstTemp->degree <= secondTemp->degree) {
             head       = firstTemp;
@@ -86,7 +95,7 @@ public:
             secondTemp = secondTemp->sibling;
         }
 
-        Node *temp = head;
+        Node<T> *temp = head;
 
         while (firstTemp != nullptr && secondTemp != nullptr){
             if (firstTemp->degree < secondTemp->degree) {
@@ -112,15 +121,15 @@ public:
             secondTemp    = secondTemp->sibling;
         }
     }
-    void unionBinominalHeap(BinominalHeap<T> *first, BinominalHeap<T> *second){
-        mergeBinominalHeap(first, second);
+    void unionHeaps (BinominalHeap<T> *first, BinominalHeap<T> *second){
+        merge(first, second);
 
         if (head == nullptr)
             return;
 
-        Node *prevX = nullptr,
-             *X     = head,
-             *nextX = X->sibling;
+        Node<T> *prevX = nullptr,
+                *X     = head,
+                *nextX = X->sibling;
 
         while (nextX != nullptr){
 
@@ -145,17 +154,17 @@ public:
             nextX = X->sibling;
         }
     }
-    void insertBinominalHeap(T value){
+    void insert     (T value){
         auto tree = new BinominalHeap<T>(value);
-        unionBinominalHeap(this, tree);
+        unionHeaps(this, tree);
         delete tree;
     }
-    void extractMinBinominalHeap(){
+    void extractMin (){
         if (head == nullptr)
             return;
 
-        Node* min = minNode();
-        Node* prevMin = prevMinNode();
+        Node<T>* min = minNode();
+        Node<T>* prevMin = prevMinNode();
 
         if (prevMin != nullptr){
             prevMin->sibling = min->sibling;
@@ -167,9 +176,9 @@ public:
             return;
 
         // nullptr all min's child's parent and reverse
-        Node *first = nullptr,
-            *second = min->child,
-             *third = second->sibling;
+        Node<T> *first = nullptr,
+               *second = min->child,
+                *third = second->sibling;
         while (second != nullptr){
             second->parent = nullptr;
             second->sibling = first;
@@ -181,13 +190,37 @@ public:
 
         BinominalHeap<T> tree;
         tree.head = first;
-        unionBinominalHeap(this, &tree);
+        unionHeaps(this, &tree);
         delete min;
     }
+    void decreaseKey(Node<T>* node, T newValue){
+        if (newValue > node->value){
+            std::cout << "New value is more than old one\n";
+            return;
+        }
+        node->value = newValue;
 
-    [[nodiscard]] Node* minNode() const{
-        Node* minimal = head;
-        Node* temp    = head->sibling;
+        Node<T> *temp = node,
+              *parent = node->parent;
+
+        while (parent != nullptr && parent->value > temp->value){
+            T tempValue = parent->value;
+            parent->value = temp->value;
+            temp->value = tempValue;
+
+            temp = parent;
+            parent = parent->parent;
+        }
+    }
+    void erase      (Node<T>* node){
+        decreaseKey(node, -INF);
+        extractMin();
+    }
+
+
+    [[nodiscard]] Node<T>* minNode() const{
+        Node<T>* minimal = head;
+        Node<T>* temp    = head->sibling;
 
         while (temp != nullptr){
             if (temp->value < minimal->value)
@@ -197,11 +230,11 @@ public:
 
         return minimal;
     }
-    [[nodiscard]] Node* prevMinNode() const{
-        Node* tempPrev = head;
-        Node* prev     = nullptr;
-        Node* minimal  = head;
-        Node* temp     = head->sibling;
+    [[nodiscard]] Node<T>* prevMinNode() const{
+        Node<T>* tempPrev = head;
+        Node<T>* prev     = nullptr;
+        Node<T>* minimal  = head;
+        Node<T>* temp     = head->sibling;
 
         while (temp != nullptr){
             if (temp->value < minimal->value) {

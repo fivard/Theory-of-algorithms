@@ -4,10 +4,13 @@
 int main() {
     BinominalHeap<int> tree;
     for (int i = 0; i < 10; i++)
-        tree.insertBinominalHeap(i);
-    tree.printBinominalHeap();
+        tree.insert(i);
+    tree.print();
 
-    tree.extractMinBinominalHeap();
-    tree.printBinominalHeap();
+    tree.extractMin();
+    tree.print();
+
+    tree.erase(tree.head->sibling->child->child->child);
+    tree.print();
     return 0;
 }
