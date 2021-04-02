@@ -28,7 +28,7 @@ private:
         void print(int countTabs) const{
             for (int i = 0; i < countTabs; i++)
                 std::cout << '\t';
-            std::cout << value;
+            std::cout << value << ":" << degree;
             if (child != nullptr) {
                 std::cout << std::endl;
                 child->print(countTabs + 1);
@@ -44,6 +44,11 @@ private:
             this->sibling = other->child;
             other->child = this;
             other->degree++;
+        }
+
+        friend std::ostream& operator<< (std::ostream &out, const Node &node){
+            out << node.value;
+            return out;
         }
     };
 
@@ -62,6 +67,14 @@ public:
         head->print(0);
     }
     void mergeBinominalHeap(BinominalHeap<T> *first, BinominalHeap<T> *second) {
+        if (first->head == nullptr){
+            head = second->head;
+            return;
+        }
+        if (second->head == nullptr){
+            head = first->head;
+            return;
+        }
         Node *firstTemp = first->head,
             *secondTemp = second->head;
 
@@ -137,8 +150,42 @@ public:
         unionBinominalHeap(this, tree);
         delete tree;
     }
+    void extractMinBinominalHeap(){
+        if (head == nullptr)
+            return;
 
-    [[nodiscard]] Node* minValue(){
+        Node* min = minNode();
+        Node* prevMin = prevMinNode();
+
+        if (prevMin != nullptr){
+            prevMin->sibling = min->sibling;
+        } else {
+            head = min->sibling;
+        }
+
+        if (min->child == nullptr)
+            return;
+
+        // nullptr all min's child's parent and reverse
+        Node *first = nullptr,
+            *second = min->child,
+             *third = second->sibling;
+        while (second != nullptr){
+            second->parent = nullptr;
+            second->sibling = first;
+
+            first = second;
+            second = third;
+            third = third == nullptr ? nullptr : third->sibling;
+        }
+
+        BinominalHeap<T> tree;
+        tree.head = first;
+        unionBinominalHeap(this, &tree);
+        delete min;
+    }
+
+    [[nodiscard]] Node* minNode() const{
         Node* minimal = head;
         Node* temp    = head->sibling;
 
@@ -149,6 +196,24 @@ public:
         }
 
         return minimal;
+    }
+    [[nodiscard]] Node* prevMinNode() const{
+        Node* tempPrev = head;
+        Node* prev     = nullptr;
+        Node* minimal  = head;
+        Node* temp     = head->sibling;
+
+        while (temp != nullptr){
+            if (temp->value < minimal->value) {
+                prev    = tempPrev;
+                minimal = temp;
+            }
+
+            tempPrev = tempPrev != nullptr ? tempPrev->sibling : head;
+            temp = temp->sibling;
+        }
+
+        return prev;
     }
 
 };
