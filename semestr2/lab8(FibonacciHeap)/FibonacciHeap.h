@@ -26,7 +26,7 @@ private:
     int degree{};
 
 public:
-    Node(){
+             Node(){
         value = 0;
         mark = false;
         parent = child = nullptr;
@@ -36,9 +36,9 @@ public:
     explicit Node(T newValue): Node(){
         value = newValue;
     }
-    ~Node() = default;
+            ~Node() = default;
 
-    void print(int countTabs, Node<T> *head) const{
+    void print         (int countTabs, Node<T> *head) const{
         for (int i = 0; i < countTabs; i++)
             std::cout << '\t';
         std::cout << value << ":" << degree << ":" << mark;
@@ -51,7 +51,7 @@ public:
             left->print(countTabs, head);
         }
     }
-    void clear(Node<T>* head) {
+    void clear         (Node<T>* head) {
         if (this != nullptr){
             if (child != nullptr)
                 child->clear(child);
