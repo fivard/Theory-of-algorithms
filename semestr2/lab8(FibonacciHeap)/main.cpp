@@ -2,7 +2,7 @@
 
 int main() {
     FibonacciHeap<int> heap;
-    Node<int>* temp, *node1, *node2, *node3;
+    Node<int>* temp, *node1, *node2, *node3, *node4;
     std::cout << "INSERT 15 NODES\n\n";
     for (int i = 0; i < 15; i++){
         temp = heap.insert(i+1);
@@ -12,6 +12,8 @@ int main() {
             node3 = temp;
         if (i == 6)
             node2 = temp;
+        if (i == 11)
+            node4 = temp;
     }
     heap.print();
 
@@ -33,6 +35,10 @@ int main() {
 
     std::cout << "\n\nEXTRACT MIN\n\n";
     heap.extractMin();
+    heap.print();
+
+    std::cout << "\n\nDELETE 12\n\n";
+    heap.deleteNode(node4);
     heap.print();
 
     return 0;

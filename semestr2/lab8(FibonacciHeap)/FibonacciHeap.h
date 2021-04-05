@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <cmath>
 
+const int INF = 10e6;
+
 template <class T>
 class FibonacciHeap;
 
@@ -109,19 +111,14 @@ private:
     }
     void consolidate (){
         int size = round(std::log(countNodes))+2;
-        std::cout << "Size = " << size << '\n';
 
         auto array = new Node<T>*[size];
         for (int i = 0; i < size; i++)
             array[i] = nullptr;
 
-        Node<T>* temp = min;
+        Node<T>* temp = min, *rightSibling = nullptr;
         do{
-//            std::cout << "--------------------------------------\nTEMP = " << temp->value << std::endl;
-//            std::cout << "ARRAY:\n";
-//            for (int i = 0; i < size; i++)
-//                std::cout << "arr[" << i << "] = " << array[i] << std::endl;
-//            print();
+            rightSibling = temp->right;
             Node<T> *x = temp;
             int degree = x->degree;
             while (array[degree] != nullptr){
@@ -132,26 +129,15 @@ private:
                     y = z;
                 }
                 link(y, x);
-//                std::cout << y->value << " parent is " << y->parent->value << std::endl;
-//                std::cout << "\nAFTER LINK\n";
-//                x->print(0, x);
-//                std::cout << "\n----\n";
                 array[degree] = nullptr;
                 degree++;
             }
             array[degree] = x;
-            while (temp->parent != nullptr)
-                temp = temp->parent;
+
             while (min->parent != nullptr)
                 min = min->parent;
-//            std::cout << temp->value << " - TEMP WITHOUT PARENT\n";
-            temp = temp->right;
-//            std::cout << "\nAFTER:\n";
-//            print();
-//            std::cout << "ARRAY:\n";
-//            for (int i = 0; i < size; i++)
-//                std::cout << "arr[" << i << "] = " << array[i] << std::endl;
-//            std::cout << "------------------------------------\n";
+
+            temp = rightSibling;;
         } while (temp != min);
 
         for (int i = 0; i < size; i++){
@@ -178,10 +164,8 @@ private:
 
 public:
              FibonacciHeap(){
-
         min = nullptr;
         countNodes = 0;
-
     }
     explicit FibonacciHeap(T value): FibonacciHeap(){
         min = new Node<T>(value);
@@ -228,11 +212,13 @@ public:
         Node<T> *head = min;
         if (head != nullptr){
             if (head->child != nullptr) {
-                Node<T> *temp = head->child;
+                Node<T> *temp = head->child, *rightSibling = nullptr;
                 do {
+                    rightSibling = temp->right;
                     temp->parent = nullptr;
+                    temp->extractBetween();
                     temp->insertBetween(min->left, min);
-                    temp = temp->right;
+                    temp = rightSibling;
                 } while (temp != head->child);
             }
 
@@ -246,6 +232,7 @@ public:
             }
             countNodes--;
         }
+        head->child = nullptr;
         head->clear(head);
     }
     void decreaseKey(Node<T> *node, T newValue){
@@ -260,9 +247,16 @@ public:
         if (node->value < min->value)
             min = node;
     }
+    void deleteNode (Node<T> *node){
+        decreaseKey(node, -INF);
+        extractMin();
+    }
 
     Node<T>*      insert(T value){
         auto node = new Node<T>(value);
+        return insert(node);
+    }
+    Node<T>*      insert(Node<T> *node){
         countNodes++;
         if (min == nullptr){
 
