@@ -21,7 +21,7 @@ public:
     T     value;
     int   degree{};
 public:
-             Node(){
+    Node(){
         parent = sibling = child = nullptr;
         value = degree = 0;
     }
