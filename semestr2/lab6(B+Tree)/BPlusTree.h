@@ -67,6 +67,13 @@ private:
         }
 
         void free(Node* node){
+            if (node == nullptr)
+                return;
+
+            for (auto i : node->childs)
+                free(i);
+
+            delete node;
         }
         void print(int spaces) const{
             if (this == nullptr)
@@ -128,6 +135,7 @@ private:
             }
         }
     }
+
     void erase(Node* toDelete, K key){
 
         toDelete->elements.erase(toDelete->elements.begin() + toDelete->findPosition(key));
@@ -175,7 +183,7 @@ private:
 
         if (left != nullptr && left->parent == toDelete->parent){
             mergeLeafs(left, toDelete);
-            updateKeys(toDelete->parent, key);
+            updateKeys(left->parent, key);
         }
 
         if (right != nullptr && right->parent == toDelete->parent){
@@ -184,7 +192,6 @@ private:
         }
 
     }
-
     void updateKeys(Node* toUpdate, const K key){
         if (toUpdate == nullptr)
             return;
@@ -235,7 +242,7 @@ private:
             root = left;
             left->parent = right->parent = nullptr;
         }
-//        delete right;
+        delete right;
     }
     void borrowElementInternal(Node* toUpdate, Node* sibling){
         Node* parent = toUpdate->parent;
@@ -392,6 +399,9 @@ public:
     explicit BPlusTree(const int& power){
         this->power = power;
         root = nullptr;
+    }
+    ~BPlusTree(){
+        root->free(root);
     }
 
     void erase(K key){
