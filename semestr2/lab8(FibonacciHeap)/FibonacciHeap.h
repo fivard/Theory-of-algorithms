@@ -33,12 +33,17 @@ public:
         left = right = this;
         degree = 0;
     }
-    explicit Node(T newValue): Node(){
+    explicit Node(T newValue){
         value = newValue;
+        mark = false;
+        parent = child = nullptr;
+        left = right = this;
+        degree = 0;
     }
             ~Node() = default;
 
     void print         (int countTabs, Node<T> *head) const{
+
         for (int i = 0; i < countTabs; i++)
             std::cout << '\t';
         std::cout << value << ":" << degree << ":" << mark;
@@ -46,7 +51,7 @@ public:
             std::cout << std::endl;
             child->print(countTabs + 1, child);
         }
-        if (left != head){
+        if (left != head) {
             std::cout << std::endl;
             left->print(countTabs, head);
         }
@@ -74,6 +79,9 @@ public:
     friend std::ostream& operator<< (std::ostream &out, const Node &node){
         out << node.value;
         return out;
+    }
+    T values(){
+        return value;
     }
 
     friend FibonacciHeap<T>;
@@ -119,6 +127,7 @@ private:
         Node<T>* temp = min, *rightSibling = nullptr;
         do{
             rightSibling = temp->right;
+
             Node<T> *x = temp;
             int degree = x->degree;
             while (array[degree] != nullptr){
@@ -137,7 +146,9 @@ private:
             while (min->parent != nullptr)
                 min = min->parent;
 
-            temp = rightSibling;;
+            temp = rightSibling;
+            if (rightSibling->parent != nullptr)
+                temp = min;
         } while (temp != min);
 
         for (int i = 0; i < size; i++){
@@ -160,26 +171,6 @@ private:
         lower->parent = higher;
         higher->degree++;
         lower->mark = false;
-    }
-
-public:
-             FibonacciHeap(){
-        min = nullptr;
-        countNodes = 0;
-    }
-    explicit FibonacciHeap(T value): FibonacciHeap(){
-        min = new Node<T>(value);
-    }
-            ~FibonacciHeap(){
-        if (min != nullptr) {
-            min->clear(min);
-        }
-    }
-
-    void print      () const{
-        min->print(0, min);
-        std::cout << std::endl;
-        std::cout << "Count nodes = " << countNodes << '\n';
     }
     void unionHeaps (FibonacciHeap<T> *first, FibonacciHeap<T> *second){
         if (first->min == nullptr && second->min == nullptr)
@@ -207,6 +198,28 @@ public:
         countNodes = first->countNodes + second->countNodes;
 
         second->min = nullptr;
+    }
+
+public:
+             FibonacciHeap(){
+        min = nullptr;
+        countNodes = 0;
+    }
+    explicit FibonacciHeap(T value): FibonacciHeap(){
+        min = new Node<T>(value);
+    }
+            ~FibonacciHeap(){
+        if (min != nullptr) {
+            min->clear(min);
+        }
+    }
+
+    void print      () const{
+        if (min != nullptr)
+            min->print(0, min);
+        else
+            std::cout << "Heap is empty";
+        std::cout << "\nCount nodes = " << countNodes << '\n';
     }
     void extractMin (){
         Node<T> *head = min;
@@ -282,7 +295,10 @@ public:
             min = node;
         return node;
     }
-    [[nodiscard]] Node<T> minimum(){
+    bool          empty(){
+        return min == nullptr;
+    }
+    [[nodiscard]] Node<T>* minimum(){
         return min;
     }
 };
