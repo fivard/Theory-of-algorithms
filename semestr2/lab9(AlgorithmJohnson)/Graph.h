@@ -201,7 +201,6 @@ public:
 
         return distance;
     };
-
 };
 
 template <class T, class D>
