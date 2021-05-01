@@ -8,18 +8,19 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include "../lab8(FibonacciHeap)/FibonacciHeap.h"
 
 #define vert first
 #define dist second
 
-const int INF = static_cast<const int>(10e9);
-
 template <class T, class D>
 class Graph{
-    std::map< T, std::map< T, D > > graph;
+    std::map<T, std::map<T, D>> graph;
     bool directed;
+    D inf;
 public:
-    explicit Graph(bool _directed): directed(_directed){};
+    Graph(bool _directed, D _inf): directed(_directed),
+                                            inf(_inf){};
     ~Graph() = default;
 
     //-----------------------Basically-----------------------//
@@ -99,7 +100,7 @@ public:
         std::map<T, D> distance;
 
         for (auto& item : graph)
-            distance[item.vert] = INF;
+            distance[item.vert] = inf;
         distance[start_vertex] = 0;
 
         for (int i = 0; i < graph.size() - 1; i++){
@@ -120,9 +121,51 @@ public:
             std::cout << item.vert << '\t' << item.dist << std::endl;
         return distance;
     }
+    std::map<T, D> Dijkstra(T start_vertex){
+        std::map<T, bool> used;
+        std::map<T, D> distance;
+        FibonacciHeap< std::pair<D, T> > heap;
 
-    
+        for (auto item : graph) {
+            used[item.vert] = false;
+            distance[item.vert] = inf;
+        }
+        distance[start_vertex] = 0;
+
+        heap.insert({0, start_vertex});
+        while (!heap.empty()){
+            T min_vertex = heap.minimum()->values().second;
+            heap.extractMin();
+
+            if (distance[min_vertex] == inf)
+                break;
+
+            used[min_vertex] = true;
+            for (auto& item : graph[min_vertex]){
+                if (distance[item.vert] > distance[min_vertex] + item.dist)
+                    distance[item.vert] = distance[min_vertex] + item.dist;
+
+                if (!used[item.vert])
+                    heap.insert({distance[item.vert], item.vert});
+            }
+        }
+
+        for (auto& item : distance)
+            std::cout << item.vert << '\t' << item.dist << std::endl;
+        return distance;
+    }
+
+    std::map<T, std::map<T, D>>{
+
+    };
+
 
 };
+
+template <class T, class D>
+std::ostream& operator<< (std::ostream &out, const std::pair<T, D> pair){
+    out << pair.first << ":" << pair.second;
+    return out;
+}
 
 #endif //LAB9_ALGORITHMJOHNSON__GRAPH_H
