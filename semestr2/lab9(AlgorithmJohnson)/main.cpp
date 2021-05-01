@@ -2,12 +2,20 @@
 
 int main() {
     Graph<int, int> graph(true);
-    graph.add_vertex(1);
-    graph.add_vertex(2);
-    graph.add_edge(1, 2, 3);
-    graph.print();
+    for (int i = 1; i < 6; i++)
+        graph.add_vertex(i);
 
-    graph.delete_edge(1,2);
+    graph.add_edge(1,2,-1);
+    graph.add_edge(1,3,4);
+    graph.add_edge(2,3,3);
+    graph.add_edge(2,4,2);
+    graph.add_edge(2,5,2);
+    graph.add_edge(4,2,1);
+    graph.add_edge(4,3,5);
+    graph.add_edge(5,4,-3);
+
     graph.print();
+    graph.BellmanFord(1);
+
     return 0;
 }

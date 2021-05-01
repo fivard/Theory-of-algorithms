@@ -12,6 +12,8 @@
 #define vert first
 #define dist second
 
+const int INF = static_cast<const int>(10e9);
+
 template <class T, class D>
 class Graph{
     std::map< T, std::map< T, D > > graph;
@@ -80,18 +82,45 @@ public:
             edges_to.erase(from_vertex);
         }
     }
-    void print(){
+    void print() const{
         std::cout << "\nGraph:\n";
         for (auto &item : graph){
             std::cout << item.first << ": ";
             for (auto edge : item.second)
-                std::cout << " ->" << edge.vert << "=" << edge.dist;
+                std::cout << "->" << edge.vert << " = " << edge.dist << '\t';
             std::cout << std::endl;
         }
         std::cout << '\n';
     }
 
     //-----------------------Algorithm------------------------//
+
+    std::map<T, D> BellmanFord(T start_vertex){
+        std::map<T, D> distance;
+
+        for (auto& item : graph)
+            distance[item.vert] = INF;
+        distance[start_vertex] = 0;
+
+        for (int i = 0; i < graph.size() - 1; i++){
+            for (auto& vertex : graph)
+                for (auto& edges : vertex.dist){
+                    if (distance[edges.vert] > distance[vertex.vert] + edges.dist)
+                        distance[edges.vert] = distance[vertex.vert] + edges.dist;
+                }
+        }
+
+        for (auto& vertex : graph)
+            for (auto& edges : vertex.dist){
+                if (distance[edges.vert] > distance[vertex.vert] + edges.dist)
+                    std::cout << "Graph contains negative weight cycle\n";
+            }
+
+        for (auto& item : distance)
+            std::cout << item.vert << '\t' << item.dist << std::endl;
+        return distance;
+    }
+
     
 
 };
