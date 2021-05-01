@@ -117,8 +117,10 @@ public:
                     std::cout << "Graph contains negative weight cycle\n";
             }
 
+        std::cout << "\tBellmanFord\n";
         for (auto& item : distance)
             std::cout << item.vert << '\t' << item.dist << std::endl;
+        std::cout << '\n';
         return distance;
     }
     std::map<T, D> Dijkstra(T start_vertex){
@@ -150,15 +152,55 @@ public:
             }
         }
 
+        std::cout << "\tDijkstra\n";
         for (auto& item : distance)
             std::cout << item.vert << '\t' << item.dist << std::endl;
+        std::cout << '\n';
         return distance;
     }
 
-    std::map<T, std::map<T, D>>{
+    std::map<T, std::map<T, D>> Johnson(){
+        std::map<T, std::map<T, D>> distance;
 
+        Graph<T, D> temp_graph(this->directed, this->inf);
+        for (auto item : this->graph)
+            temp_graph.graph[item.first] = item.second;
+
+        auto temp_vertex = new T();
+        temp_graph.add_vertex(*temp_vertex);
+        for (auto& item : graph)
+            temp_graph.graph[*temp_vertex][item.vert] = D();
+
+        auto h = temp_graph.BellmanFord(*temp_vertex);
+        temp_graph.delete_vertex(*temp_vertex);
+
+        for (auto& item : temp_graph.graph)
+            for (auto& edges : item.dist)
+                edges.dist += h[item.vert] - h[edges.vert];
+        std::cout << "\nAfter changing weight of edges\n";
+        temp_graph.print();
+
+
+        for (auto& item : temp_graph.graph)
+            distance[item.vert] = temp_graph.Dijkstra(item.vert);
+
+        for (auto& item : distance)
+            for (auto& edges : item.dist)
+                edges.dist += h[edges.vert] - h[item.vert];
+
+        std::cout << "\tJohnson\n";
+        for (auto& item : distance)
+            std::cout << '\t' << item.vert;
+        std::cout << std::endl;
+        for (auto& item : distance) {
+            std::cout << item.vert;
+            for (auto &edges : item.dist)
+                std::cout << '\t' << edges.dist;
+            std::cout << std::endl;
+        }
+
+        return distance;
     };
-
 
 };
 
