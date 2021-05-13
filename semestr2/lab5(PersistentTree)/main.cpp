@@ -2,7 +2,7 @@
 
 int main() {
     PersistentTree tree;
-    for (int i = 0; i < 16; i += 2) {
+    for (int i = 0; i < 10; i += 2) {
         cout << "-------------------------INSERT " << i << "--------------------------------\n";
         tree.insert(i);
         tree.Dump();
@@ -10,7 +10,7 @@ int main() {
 
     tree.Dump();
 
-    for (int i = 0; i < 16; i += 2){
+    for (int i = 0; i < 10; i += 2){
         cout << "-------------------------DELETING " << i << "--------------------------------\n";
         tree.erase(i);
         tree.Dump();

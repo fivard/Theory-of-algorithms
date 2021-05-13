@@ -8,6 +8,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+#include <map>
 
 const int INF = 10e6;
 
@@ -124,8 +125,10 @@ private:
         for (int i = 0; i < size; i++)
             array[i] = nullptr;
 
+        std::map< Node<T>* , bool> dict;
         Node<T>* temp = min, *rightSibling = nullptr;
         do{
+            dict[temp] = true;
             rightSibling = temp->right;
 
             Node<T> *x = temp;
@@ -142,14 +145,12 @@ private:
                 degree++;
             }
             array[degree] = x;
-
-            while (min->parent != nullptr)
-                min = min->parent;
-
             temp = rightSibling;
-            if (rightSibling->parent != nullptr)
-                temp = min;
-        } while (temp != min);
+
+//            if (rightSibling->parent != nullptr)
+//                temp = min;
+//
+        } while (dict[temp] == false);
 
         for (int i = 0; i < size; i++){
             if (array[i] != nullptr){
@@ -225,16 +226,16 @@ public:
         Node<T> *head = min;
         if (head != nullptr){
             if (head->child != nullptr) {
-                Node<T> *temp = head->child, *rightSibling = nullptr;
+                Node<T> *temp = head->child, *rightSibling;
                 do {
                     rightSibling = temp->right;
                     temp->parent = nullptr;
                     temp->extractBetween();
                     temp->insertBetween(min->left, min);
                     temp = rightSibling;
-                } while (temp != head->child);
-            }
 
+                } while (temp->right != min);
+            }
 
             if (head == head->right)
                 min = nullptr;

@@ -108,7 +108,6 @@ private:
             cout << endl;
         }
     };
-
     [[ nodiscard ]] Node* generateTree(int i, int j, Node* parent){
         if (j == i - 1){
             return new Node(0, fictitiousKeys[i-1], false);
